@@ -503,7 +503,7 @@
              font-size: 11px;
              font-weight: 600;
              color: var(--text-muted);
-             min-width: 38px;
+             min-width: 58px; /* Increased to fit HH:MM:SS */
              text-align: center;
              font-variant-numeric: tabular-nums;
              text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -1367,7 +1367,13 @@
       function clamp(value, min, max) { return Math.min(Math.max(Number(value), min), max); }
       function formatTime(seconds) {
         if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
-        const m = Math.floor(seconds / 60), s = Math.floor(seconds % 60);
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+
+        if (h > 0) {
+          return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
         return `${m}:${String(s).padStart(2, '0')}`;
       }
       function setStatus(msg) { statusMessage.textContent = msg; }
@@ -1419,9 +1425,11 @@
         const max = parseFloat(slider.max) || 100;
         const val = parseFloat(slider.value) || 0;
 
-        // Correct calculation for custom ranges (including negative min values)
-        const percentage = ((val - min) / (max - min)) * 100;
-  
+        // Handles Infinity or invalid durations smoothly
+        const percentage = (Number.isFinite(max) && max > min) 
+          ? ((val - min) / (max - min)) * 100 
+          : 0;
+
         slider.style.setProperty('--progress', `${percentage}%`);
       }
       function updateAllSliderProgress() {
@@ -1637,7 +1645,7 @@
         state.recStartTime = Date.now();
         state.recordingInterval = setInterval(() => {
           const s = Math.floor((Date.now() - state.recStartTime)/1000);
-          recTimeDisplay.textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+          recTimeDisplay.textContent = formatTime(s);
         }, 1000);
         showToast("Recording started...");
       }
