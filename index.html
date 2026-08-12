@@ -8,1349 +8,1368 @@
     <meta name="theme-color" content="#080610">
     <link rel="icon" href="./icon-192.png" type="image/png">
     <style>
-         /* ==========================================================================
+        /* ==========================================================================
         1. CORE DESIGN SYSTEM & BASE STYLES
         ========================================================================== */
-         :root {
-             --bg-dark: #080610;
-             --bg-pure-black: #000000;
-             --glass-bg: rgba(255, 255, 255, 0.06);
-             --glass-border: rgba(255, 255, 255, 0.15);
-             --glass-glow: rgba(0, 0, 0, 0.4);
-             --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-             --accent-cyan: #00dfd8;
-             --accent-purple: #7928ca;
-             --accent-red: #ff003c;
-             --text-main: #ffffff;
-             --text-muted: rgba(255, 255, 255, 0.65);
-         }
+        :root {
+            --bg-dark: #080610;
+            --bg-pure-black: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-glow: rgba(0, 0, 0, 0.4);
+            --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            --accent-cyan: #00dfd8;
+            --accent-purple: #7928ca;
+            --accent-red: #ff003c;
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.65);
+        }
 
-         * {
-             box-sizing: border-box;
-             margin: 0;
-             padding: 0;
-             user-select: none;
-             -webkit-user-select: none;
-             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-         }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-         body {
-             width: 100vw;
-             height: 100vh;
-             min-height: 100vh;
-             background-color: var(--bg-dark);
-             color: var(--text-main);
-             overflow: hidden;
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-         }
+        body {
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-             body.expanded {
-                 background-color: var(--bg-pure-black);
-             }
+            body.expanded {
+                background-color: var(--bg-pure-black);
+            }
 
-         /* Custom Scrollbars */
-         ::-webkit-scrollbar {
-             width: 6px;
-         }
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
 
-         ::-webkit-scrollbar-track {
-             background: rgba(0,0,0,0.2);
-             border-radius: 4px;
-         }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
 
-         ::-webkit-scrollbar-thumb {
-             background: rgba(255,255,255,0.2);
-             border-radius: 4px;
-         }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
 
-             ::-webkit-scrollbar-thumb:hover {
-                 background: var(--accent-cyan);
-                 box-shadow: 0 0 10px var(--accent-cyan);
-             }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--accent-cyan);
+                box-shadow: 0 0 10px var(--accent-cyan);
+            }
 
-         /* ==========================================================================
+        /* ==========================================================================
         2. FULLSCREEN CANVAS VISUALIZER
         ========================================================================== */
-         #visualizer {
-             position: absolute;
-             top: 0;
-             left: 0;
-             width: 100vw;
-             height: 100vh;
-             z-index: 1;
-             pointer-events: none;
-         }
+        #visualizer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         3. AMBIENT BACKDROP ORBS
         ========================================================================== */
-         .backdrop-orbs {
-             position: absolute;
-             width: 100vw;
-             height: 100vh;
-             top: 0;
-             left: 0;
-             overflow: hidden;
-             z-index: 0;
-             pointer-events: none;
-             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-         }
+        .backdrop-orbs {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-         body.expanded .backdrop-orbs {
-             opacity: 0;
-         }
+        body.expanded .backdrop-orbs {
+            opacity: 0;
+        }
 
-         .orb {
-             position: absolute;
-             border-radius: 50%;
-             filter: blur(90px);
-             opacity: 0.75;
-             will-change: transform;
-         }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.75;
+            will-change: transform;
+        }
 
-         .orb-1 {
-             width: 340px;
-             height: 340px;
-             background: linear-gradient(135deg, #ff007f, #7928ca);
-             top: 15%;
-             left: 20%;
-             animation: float-1 14s ease-in-out infinite alternate;
-         }
+        .orb-1 {
+            width: 340px;
+            height: 340px;
+            background: linear-gradient(135deg, #ff007f, #7928ca);
+            top: 15%;
+            left: 20%;
+            animation: float-1 14s ease-in-out infinite alternate;
+        }
 
-         .orb-2 {
-             width: 380px;
-             height: 380px;
-             background: linear-gradient(135deg, #00dfd8, #007cf0);
-             bottom: 15%;
-             right: 20%;
-             animation: float-2 18s ease-in-out infinite alternate;
-         }
+        .orb-2 {
+            width: 380px;
+            height: 380px;
+            background: linear-gradient(135deg, #00dfd8, #007cf0);
+            bottom: 15%;
+            right: 20%;
+            animation: float-2 18s ease-in-out infinite alternate;
+        }
 
-         .orb-3 {
-             width: 260px;
-             height: 260px;
-             background: linear-gradient(135deg, #ff416c, #8a2be2);
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%);
-             animation: float-3 12s ease-in-out infinite alternate;
-         }
+        .orb-3 {
+            width: 260px;
+            height: 260px;
+            background: linear-gradient(135deg, #ff416c, #8a2be2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: float-3 12s ease-in-out infinite alternate;
+        }
 
-         @keyframes float-1 {
-             0% {
-                 transform: translate(0, 0) scale(1);
-             }
+        @keyframes float-1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
 
-             100% {
-                 transform: translate(80px, -60px) scale(1.15);
-             }
-         }
+            100% {
+                transform: translate(80px, -60px) scale(1.15);
+            }
+        }
 
-         @keyframes float-2 {
-             0% {
-                 transform: translate(0, 0) scale(1);
-             }
+        @keyframes float-2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
 
-             100% {
-                 transform: translate(-90px, 50px) scale(1.1);
-             }
-         }
+            100% {
+                transform: translate(-90px, 50px) scale(1.1);
+            }
+        }
 
-         @keyframes float-3 {
-             0% {
-                 transform: translate(-50%, -50%) scale(0.9);
-             }
+        @keyframes float-3 {
+            0% {
+                transform: translate(-50%, -50%) scale(0.9);
+            }
 
-             100% {
-                 transform: translate(-30%, -70%) scale(1.2);
-             }
-         }
+            100% {
+                transform: translate(-30%, -70%) scale(1.2);
+            }
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         4. MORPHING GLASS PANEL CONTAINER
         ========================================================================== */
-         #app-panel {
-             position: fixed;
-             z-index: 10;
-             background: var(--glass-bg);
-             backdrop-filter: blur(20px);
-             -webkit-backdrop-filter: blur(20px);
-             border: 1px solid var(--glass-border);
-             box-shadow: 0 30px 60px var(--glass-glow), var(--glass-highlight);
-             display: flex;
-             flex-direction: column;
-             gap: 16px;
-             box-sizing: border-box;
-             will-change: width, max-width, top, left, transform, border-radius, padding, filter;
-             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-         }
+        #app-panel {
+            position: fixed;
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px var(--glass-glow), var(--glass-highlight);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-sizing: border-box;
+            will-change: width, max-width, top, left, transform, border-radius, padding, filter;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-         body:not(.expanded) #app-panel {
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%);
-             width: 380px;
-             max-width: 92vw;
-             border-radius: 32px;
-             padding: 24px;
-         }
+        body:not(.expanded) #app-panel {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            max-width: 92vw;
+            border-radius: 32px;
+            padding: 24px;
+        }
 
-         body.expanded #app-panel {
-             top: calc(100vh - 24px);
-             left: 50%;
-             transform: translate(-50%, -100%);
-             width: 92%;
-             max-width: 1100px;
-             border-radius: 20px;
-             padding: 18px 26px;
-         }
+        body.expanded #app-panel {
+            top: calc(100vh - 24px);
+            left: 50%;
+            transform: translate(-50%, -100%);
+            width: 92%;
+            max-width: 1100px;
+            border-radius: 20px;
+            padding: 18px 26px;
+        }
 
-         @keyframes panel-motion-blur {
-             0% {
-                 filter: blur(0px);
-                 opacity: 1;
-             }
+        @keyframes panel-motion-blur {
+            0% {
+                filter: blur(0px);
+                opacity: 1;
+            }
 
-             50% {
-                 filter: blur(12px);
-                 opacity: 0.7;
-             }
+            50% {
+                filter: blur(12px);
+                opacity: 0.7;
+            }
 
-             100% {
-                 filter: blur(0px);
-                 opacity: 1;
-             }
-         }
+            100% {
+                filter: blur(0px);
+                opacity: 1;
+            }
+        }
 
-         body.is-transitioning #app-panel {
-             animation: panel-motion-blur 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-         }
+        body.is-transitioning #app-panel {
+            animation: panel-motion-blur 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         5. PANEL HEADER & BADGES
         ========================================================================== */
-         .panel-header {
-             display: flex;
-             align-items: center;
-             justify-content: space-between;
-             gap: 12px;
-             width: 100%;
-         }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
 
-         .brand-info {
-             display: flex;
-             flex-direction: column;
-             overflow: hidden;
-         }
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-         .brand-badge-container {
-             display: flex;
-             align-items: center;
-             gap: 8px;
-         }
+        .brand-badge-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-         .brand-badge {
-             font-size: 10px;
-             font-weight: 700;
-             letter-spacing: 1.5px;
-             color: var(--accent-cyan);
-             text-transform: uppercase;
-         }
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+        }
 
-         .live-badge {
-             display: none;
-             font-size: 9px;
-             font-weight: 800;
-             letter-spacing: 1px;
-             color: #fff;
-             background: var(--accent-red);
-             padding: 2px 6px;
-             border-radius: 4px;
-             text-transform: uppercase;
-             box-shadow: 0 0 10px var(--accent-red);
-             animation: pulse-red 1.5s infinite;
-         }
+        .live-badge {
+            display: none;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #fff;
+            background: var(--accent-red);
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px var(--accent-red);
+            animation: pulse-red 1.5s infinite;
+        }
 
-         body.live-mode .live-badge {
-             display: block;
-         }
+        body.live-mode .live-badge {
+            display: block;
+        }
 
-         .track-title {
-             font-size: 16px;
-             font-weight: 700;
-             white-space: nowrap;
-             overflow: hidden;
-             text-overflow: ellipsis;
-             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-         }
+        .track-title {
+            font-size: 16px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
 
-         .header-actions {
-             display: flex;
-             align-items: center;
-             gap: 8px;
-         }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         6. ALBUM ARTWORK & RECORDING OVERLAY
         ========================================================================== */
-         .album-art-section {
-             width: 100%;
-             max-height: 380px;
-             opacity: 1;
-             overflow: hidden;
-             position: relative;
-             transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-         }
+        .album-art-section {
+            width: 100%;
+            max-height: 380px;
+            opacity: 1;
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-         body.expanded .album-art-section {
-             max-height: 0;
-             opacity: 0;
-             margin: 0;
-             pointer-events: none;
-         }
+        body.expanded .album-art-section {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            pointer-events: none;
+        }
 
-         .album-art-wrapper {
-             position: relative;
-             width: 100%;
-             aspect-ratio: 1 / 1;
-             border-radius: 20px;
-             overflow: hidden;
-             cursor: pointer;
-             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.3));
-             border: 1px solid rgba(255, 255, 255, 0.15);
-             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), var(--glass-highlight);
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             transition: all 0.3s ease;
-         }
+        .album-art-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), var(--glass-highlight);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
 
-             .album-art-wrapper:hover {
-                 transform: scale(1.02);
-                 border-color: rgba(255, 255, 255, 0.3);
-                 box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 223, 216, 0.2);
-             }
+            .album-art-wrapper:hover {
+                transform: scale(1.02);
+                border-color: rgba(255, 255, 255, 0.3);
+                box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 223, 216, 0.2);
+            }
 
-         .vinyl-disc {
-             position: absolute;
-             width: 85%;
-             height: 85%;
-             border-radius: 50%;
-             background: radial-gradient(circle, #111 20%, #222 21%, #111 30%, #151515 40%, #080808 70%);
-             border: 2px solid rgba(255, 255, 255, 0.05);
-             box-shadow: 0 0 15px rgba(0,0,0,0.6);
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             transition: transform 0.5s ease;
-         }
+        .vinyl-disc {
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #111 20%, #222 21%, #111 30%, #151515 40%, #080808 70%);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.5s ease;
+        }
 
-         .vinyl-center {
-             width: 35%;
-             height: 35%;
-             border-radius: 50%;
-             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-             border: 3px solid #080610;
-             display: flex;
-             justify-content: center;
-             align-items: center;
-         }
+        .vinyl-center {
+            width: 35%;
+            height: 35%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: 3px solid #080610;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-             .vinyl-center::after {
-                 content: '';
-                 width: 8px;
-                 height: 8px;
-                 border-radius: 50%;
-                 background: #080610;
-             }
+            .vinyl-center::after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: #080610;
+            }
 
-         .album-art-wrapper.playing .vinyl-disc {
-             animation: spin 8s linear infinite;
-         }
+        .album-art-wrapper.playing .vinyl-disc {
+            animation: spin 8s linear infinite;
+        }
 
-         @keyframes spin {
-             from {
-                 transform: rotate(0deg);
-             }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
 
-             to {
-                 transform: rotate(360deg);
-             }
-         }
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-         .upload-overlay {
-             position: absolute;
-             inset: 0;
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             align-items: center;
-             gap: 8px;
-             background: rgba(8, 6, 16, 0.35);
-             backdrop-filter: blur(4px);
-             -webkit-backdrop-filter: blur(4px);
-             opacity: 0.85;
-             transition: all 0.3s ease;
-             color: var(--text-main);
-         }
+        .upload-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            background: rgba(8, 6, 16, 0.35);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 0.85;
+            transition: all 0.3s ease;
+            color: var(--text-main);
+        }
 
-         .album-art-wrapper:hover .upload-overlay {
-             opacity: 1;
-             background: rgba(8, 6, 16, 0.7);
-         }
+        .album-art-wrapper:hover .upload-overlay {
+            opacity: 1;
+            background: rgba(8, 6, 16, 0.7);
+        }
 
-         .upload-overlay svg {
-             width: 36px;
-             height: 36px;
-             fill: none;
-             stroke: currentColor;
-             stroke-width: 2;
-         }
+        .upload-overlay svg {
+            width: 36px;
+            height: 36px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+        }
 
-         .upload-overlay span {
-             font-size: 12px;
-             font-weight: 600;
-             letter-spacing: 0.5px;
-             text-transform: uppercase;
-         }
+        .upload-overlay span {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
 
-         /* Recording Overlay inside Art */
-         .rec-overlay {
-             position: absolute;
-             inset: 0;
-             background: rgba(0,0,0,0.7);
-             backdrop-filter: blur(8px);
-             display: flex;
-             flex-direction: column;
-             justify-content: center;
-             align-items: center;
-             z-index: 5;
-             opacity: 0;
-             pointer-events: none;
-             transition: opacity 0.3s;
-         }
+        /* Recording Overlay inside Art */
+        .rec-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
 
-         body.is-recording .rec-overlay {
-             opacity: 1;
-             pointer-events: all;
-         }
+        body.is-recording .rec-overlay {
+            opacity: 1;
+            pointer-events: all;
+        }
 
-         .rec-dot {
-             width: 20px;
-             height: 20px;
-             border-radius: 50%;
-             background: var(--accent-red);
-             box-shadow: 0 0 20px var(--accent-red);
-             animation: pulse-red 1s infinite;
-             margin-bottom: 12px;
-         }
+        .rec-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 20px var(--accent-red);
+            animation: pulse-red 1s infinite;
+            margin-bottom: 12px;
+        }
 
-         .rec-time {
-             font-size: 24px;
-             font-weight: 700;
-             font-variant-numeric: tabular-nums;
-         }
+        .rec-time {
+            font-size: 24px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
 
-         .rec-stop-btn {
-             margin-top: 16px;
-             padding: 8px 16px;
-             background: rgba(255,255,255,0.1);
-             border: 1px solid var(--accent-red);
-             color: #fff;
-             border-radius: 20px;
-             cursor: pointer;
-             font-weight: bold;
-             transition: all 0.2s;
-             box-shadow: var(--glass-highlight);
-         }
+        .rec-stop-btn {
+            margin-top: 16px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--accent-red);
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: var(--glass-highlight);
+        }
 
-             .rec-stop-btn:hover {
-                 background: var(--accent-red);
-                 box-shadow: 0 0 15px var(--accent-red);
-             }
+            .rec-stop-btn:hover {
+                background: var(--accent-red);
+                box-shadow: 0 0 15px var(--accent-red);
+            }
 
-         @keyframes pulse-red {
-             0% {
-                 transform: scale(1);
-                 box-shadow: 0 0 10px var(--accent-red);
-             }
+        @keyframes pulse-red {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px var(--accent-red);
+            }
 
-             50% {
-                 transform: scale(1.1);
-                 box-shadow: 0 0 25px var(--accent-red);
-             }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 25px var(--accent-red);
+            }
 
-             100% {
-                 transform: scale(1);
-                 box-shadow: 0 0 10px var(--accent-red);
-             }
-         }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px var(--accent-red);
+            }
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         7. UI CONTROLS & TIMELINE
         ========================================================================== */
-         .timeline-container {
-             display: flex;
-             align-items: center;
-             gap: 12px;
-             width: 100%;
-         }
+        .timeline-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
 
-         .time-display {
-             font-size: 11px;
-             font-weight: 600;
-             color: var(--text-muted);
-             min-width: 58px; /* Increased to fit HH:MM:SS */
-             text-align: center;
-             font-variant-numeric: tabular-nums;
-             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-         }
+        .time-display {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 58px; /* Increased to fit HH:MM:SS */
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
 
-         .progress-wrapper {
-             flex-grow: 1;
-             display: flex;
-             align-items: center;
-         }
+        .progress-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
 
-         input[type="range"] {
-             -webkit-appearance: none;
-             appearance: none;
-             width: 100%;
-             height: 6px;
-             border-radius: 3px;
-             background: rgba(255, 255, 255, 0.15);
-             outline: none;
-             cursor: pointer;
-         }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            cursor: pointer;
+        }
 
-             input[type="range"]::-webkit-slider-runnable-track {
-                 height: 6px;
-                 border-radius: 3px;
-                 background: linear-gradient(to right, var(--accent-cyan) var(--progress, 0%), rgba(255, 255, 255, 0.15) var(--progress, 0%));
-             }
+            input[type="range"]::-webkit-slider-runnable-track {
+                height: 6px;
+                border-radius: 3px;
+                background: linear-gradient(to right, var(--accent-cyan) var(--progress, 0%), rgba(255, 255, 255, 0.15) var(--progress, 0%));
+            }
 
-             input[type="range"]::-webkit-slider-thumb {
-                 -webkit-appearance: none;
-                 appearance: none;
-                 width: 14px;
-                 height: 14px;
-                 border-radius: 50%;
-                 background: #ffffff;
-                 box-shadow: 0 0 10px var(--accent-cyan);
-                 margin-top: -4px;
-                 transition: transform 0.15s ease, box-shadow 0.15s ease;
-             }
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: #ffffff;
+                box-shadow: 0 0 10px var(--accent-cyan);
+                margin-top: -4px;
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+            }
 
-             input[type="range"]:hover::-webkit-slider-thumb {
-                 transform: scale(1.3);
-                 box-shadow: 0 0 14px var(--accent-cyan), 0 0 4px #ffffff;
-             }
+            input[type="range"]:hover::-webkit-slider-thumb {
+                transform: scale(1.3);
+                box-shadow: 0 0 14px var(--accent-cyan), 0 0 4px #ffffff;
+            }
 
-         /* ==========================================================================
+        /* ==========================================================================
         8. BUTTONS & HARDWARE CONTROL ROW
         ========================================================================== */
-         .playback-controls-row {
-             display: flex;
-             align-items: center;
-             justify-content: center; /* Center items instead of pushing to edges */
-             gap: 15px;
-             flex-wrap: wrap; /* KEY FIX: Allows buttons to wrap to a new line */
-             width: 100%;
-         }
+        .playback-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center items instead of pushing to edges */
+            gap: 15px;
+            flex-wrap: wrap; /* KEY FIX: Allows buttons to wrap to a new line */
+            width: 100%;
+        }
 
-         .main-controls-group {
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             gap: 10px;
-             flex-wrap: wrap; /* Ensures inner buttons wrap gracefully on very narrow screens */
-         }
+        .main-controls-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Ensures inner buttons wrap gracefully on very narrow screens */
+        }
 
-         .glass-btn {
-             background: rgba(255, 255, 255, 0.08);
-             border: 1px solid rgba(255, 255, 255, 0.15);
-             border-radius: 50%;
-             color: var(--text-main);
-             cursor: pointer;
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-             backdrop-filter: blur(10px);
-             flex-shrink: 0;
-             box-shadow: var(--glass-highlight);
-         }
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            box-shadow: var(--glass-highlight);
+        }
 
-             .glass-btn:hover {
-                 background: rgba(255, 255, 255, 0.2);
-                 border-color: rgba(255, 255, 255, 0.35);
-                 transform: translateY(-2px) scale(1.04);
-                 color: var(--accent-cyan);
-             }
+            .glass-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.35);
+                transform: translateY(-2px) scale(1.04);
+                color: var(--accent-cyan);
+            }
 
-             .glass-btn:active {
-                 transform: translateY(0) scale(0.95);
-             }
+            .glass-btn:active {
+                transform: translateY(0) scale(0.95);
+            }
 
-             .glass-btn.active {
-                 color: var(--accent-cyan);
-                 border-color: var(--accent-cyan);
-                 background: rgba(0, 223, 216, 0.15);
-                 box-shadow: 0 0 12px rgba(0, 223, 216, 0.3), var(--glass-highlight);
-             }
+            .glass-btn.active {
+                color: var(--accent-cyan);
+                border-color: var(--accent-cyan);
+                background: rgba(0, 223, 216, 0.15);
+                box-shadow: 0 0 12px rgba(0, 223, 216, 0.3), var(--glass-highlight);
+            }
 
-         /* Specific Button Sizes */
-         .btn-xs {
-             width: 30px;
-             height: 30px;
-         }
+        /* Specific Button Sizes */
+        .btn-xs {
+            width: 30px;
+            height: 30px;
+        }
 
-         .btn-small {
-             width: 36px;
-             height: 36px;
-         }
+        .btn-small {
+            width: 36px;
+            height: 36px;
+        }
 
-         .btn-medium {
-             width: 42px;
-             height: 42px;
-         }
+        .btn-medium {
+            width: 42px;
+            height: 42px;
+        }
 
-         .btn-large {
-             width: 52px;
-             height: 52px;
-             background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
-             border-color: rgba(255, 255, 255, 0.3);
-         }
+        .btn-large {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
+            border-color: rgba(255, 255, 255, 0.3);
+        }
 
-         .glass-btn svg {
-             width: 45%;
-             height: 45%;
-             fill: currentColor;
-         }
+        .glass-btn svg {
+            width: 45%;
+            height: 45%;
+            fill: currentColor;
+        }
 
-         .icon-btn {
-             border-radius: 10px;
-             padding: 6px 10px;
-             width: auto;
-             height: 34px;
-             font-size: 12px;
-             gap: 6px;
-         }
+        .icon-btn {
+            border-radius: 10px;
+            padding: 6px 10px;
+            width: auto;
+            height: 34px;
+            font-size: 12px;
+            gap: 6px;
+        }
 
-         .volume-container {
-             display: flex;
-             align-items: center;
-             gap: 8px;
-             width: 90px;
-         }
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 90px;
+        }
 
-         /* ==========================================================================
+        /* ==========================================================================
         9. DRAWERS (SETTINGS & QUEUE) & MODALS (EQ)
         ========================================================================== */
-         .premium-drawer {
-             position: fixed;
-             top: 0;
-             bottom: 0;
-             width: 340px;
-             max-width: 85vw;
-             background: rgba(10,8,20,0.65);
-             backdrop-filter: blur(40px);
-             -webkit-backdrop-filter: blur(40px);
-             border-left: 1px solid rgba(255,255,255,0.15);
-             z-index: 100;
-             padding: 24px;
-             display: flex;
-             flex-direction: column;
-             gap: 20px;
-             transform: translateX(100%);
-             visibility: hidden;
-             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1), visibility 0.5s;
-             overflow-y: auto;
-             overflow-x: hidden;
-         }
+        .premium-drawer {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 340px;
+            max-width: 85vw;
+            background: rgba(10,8,20,0.65);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-left: 1px solid rgba(255,255,255,0.15);
+            z-index: 100;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transform: translateX(100%);
+            visibility: hidden;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1), visibility 0.5s;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
 
-             .premium-drawer.open {
-                 transform: translateX(0);
-                 visibility: visible;
-                 box-shadow: -20px 0 50px rgba(0,0,0,0.6), inset 1px 0 0 rgba(255,255,255,0.3);
-             }
+            .premium-drawer.open {
+                transform: translateX(0);
+                visibility: visible;
+                box-shadow: -20px 0 50px rgba(0,0,0,0.6), inset 1px 0 0 rgba(255,255,255,0.3);
+            }
 
-         .drawer-left {
-             right: auto;
-             left: 0;
-             transform: translateX(-100%);
-             border-left: none;
-             border-right: 1px solid rgba(255,255,255,0.15);
-         }
+        .drawer-left {
+            right: auto;
+            left: 0;
+            transform: translateX(-100%);
+            border-left: none;
+            border-right: 1px solid rgba(255,255,255,0.15);
+        }
 
-             .drawer-left.open {
-                 transform: translateX(0);
-                 visibility: visible;
-                 box-shadow: 20px 0 50px rgba(0,0,0,0.6), inset -1px 0 0 rgba(255,255,255,0.3);
-             }
+            .drawer-left.open {
+                transform: translateX(0);
+                visibility: visible;
+                box-shadow: 20px 0 50px rgba(0,0,0,0.6), inset -1px 0 0 rgba(255,255,255,0.3);
+            }
 
-         .drawer-header {
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             border-bottom: 1px solid rgba(255,255,255,0.1);
-             padding-bottom: 12px;
-         }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+        }
 
-         .drawer-title {
-             font-size: 18px;
-             font-weight: 700;
-             color: #fff;
-             display: flex;
-             align-items: center;
-             gap: 8px;
-         }
+        .drawer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-         /* Settings Center Styles */
-         .setting-group {
-             display: flex;
-             flex-direction: column;
-             gap: 8px;
-             margin-bottom: 8px;
-         }
+        /* Settings Center Styles */
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
 
-         .setting-label {
-             font-size: 11px;
-             font-weight: 700;
-             text-transform: uppercase;
-             color: var(--accent-cyan);
-             letter-spacing: 1px;
-         }
+        .setting-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+        }
 
-         .setting-desc {
-             font-size: 11px;
-             color: var(--text-muted);
-             margin-bottom: 4px;
-         }
+        .setting-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
 
-         select.premium-select {
-             background: rgba(255, 255, 255, 0.05);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             color: #ffffff;
-             padding: 10px 14px;
-             border-radius: 12px;
-             outline: none;
-             cursor: pointer;
-             font-size: 13px;
-             font-weight: 500;
-             width: 100%;
-             transition: all 0.2s ease;
-             appearance: none;
-             box-shadow: var(--glass-highlight);
-         }
+        select.premium-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 12px;
+            outline: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.2s ease;
+            appearance: none;
+            box-shadow: var(--glass-highlight);
+        }
 
-             select.premium-select:hover {
-                 border-color: var(--accent-cyan);
-                 background: rgba(255, 255, 255, 0.1);
-             }
+            select.premium-select:hover {
+                border-color: var(--accent-cyan);
+                background: rgba(255, 255, 255, 0.1);
+            }
 
-             select.premium-select option {
-                 background: #12101e;
-                 color: #ffffff;
-             }
+            select.premium-select option {
+                background: #12101e;
+                color: #ffffff;
+            }
 
-         /* EQ Rack Modal */
-         /* Web Audio EQ Popup Modal */
-         .eq-modal {
-             position: fixed;
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -40%) scale(0.9);
-             opacity: 0;
-             pointer-events: none;
-             background: rgba(12, 10, 24, 0.75);
-             backdrop-filter: blur(35px);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             border-radius: 24px;
-             padding: 24px;
-             z-index: 150;
-             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), var(--glass-highlight);
-             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-             display: flex;
-             flex-direction: column;
-             gap: 20px;
-         }
+        /* EQ Rack Modal */
+        /* Web Audio EQ Popup Modal */
+        .eq-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%) scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            background: rgba(12, 10, 24, 0.75);
+            backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 24px;
+            z-index: 150;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), var(--glass-highlight);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-             .eq-modal.open {
-                 transform: translate(-50%, -50%) scale(1);
-                 opacity: 1;
-                 pointer-events: all;
-             }
-         /* Presets Row */
-         .eq-presets {
-             display: flex;
-             gap: 8px;
-             flex-wrap: wrap;
-             justify-content: center;
-             position: relative;
-             z-index: 2; /* Keeps preset pills on top and clickable */
-         }
+            .eq-modal.open {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                pointer-events: all;
+            }
+        /* Presets Row */
+        .eq-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 2; /* Keeps preset pills on top and clickable */
+        }
 
-         .eq-preset-pill {
-             background: rgba(255, 255, 255, 0.05);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             border-radius: 20px;
-             padding: 6px 12px;
-             font-size: 11px;
-             cursor: pointer;
-             color: #fff;
-             transition: 0.2s;
-         }
+        .eq-preset-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            color: #fff;
+            transition: 0.2s;
+        }
 
-             .eq-preset-pill:hover,
-             .eq-preset-pill.active {
-                 background: var(--accent-cyan);
-                 color: #000;
-                 border-color: var(--accent-cyan);
-                 box-shadow: 0 0 15px rgba(0, 223, 216, 0.4);
-                 font-weight: bold;
-             }
-         /* Sliders Container */
-         .eq-sliders-container {
-             display: flex;
-             justify-content: center;
-             gap: 45px;
-             height: 180px;
-             align-items: flex-end;
-             margin-top: 55px; /* KEY FIX: Pushes rotated sliders down out of the presets row */
-             position: relative;
-             z-index: 1;
-         }
+            .eq-preset-pill:hover,
+            .eq-preset-pill.active {
+                background: var(--accent-cyan);
+                color: #000;
+                border-color: var(--accent-cyan);
+                box-shadow: 0 0 15px rgba(0, 223, 216, 0.4);
+                font-weight: bold;
+            }
+        /* Sliders Container */
+        .eq-sliders-container {
+            display: flex;
+            justify-content: center;
+            gap: 45px;
+            height: 180px;
+            align-items: flex-end;
+            margin-top: 55px; /* KEY FIX: Pushes rotated sliders down out of the presets row */
+            position: relative;
+            z-index: 1;
+        }
 
-         .eq-band {
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             gap: 12px;
-             height: 100%;
-             width: 40px;
-         }
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            height: 100%;
+            width: 40px;
+        }
 
-             .eq-band span {
-                 font-size: 11px;
-                 font-weight: 700;
-                 color: var(--text-muted);
-             }
-         /* Vertical Range Sliders */
-         .eq-slider {
-             -webkit-appearance: none;
-             appearance: none;
-             width: 140px;
-             height: 6px;
-             background: rgba(255, 255, 255, 0.1);
-             border-radius: 3px;
-             outline: none;
-             transform: rotate(-90deg) translate(-65px, 0);
-             transform-origin: left top;
-             cursor: pointer;
-         }
+            .eq-band span {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-muted);
+            }
+        /* Vertical Range Sliders */
+        .eq-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 140px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            transform: rotate(-90deg) translate(-65px, 0);
+            transform-origin: left top;
+            cursor: pointer;
+        }
 
-             .eq-slider::-webkit-slider-thumb {
-                 -webkit-appearance: none;
-                 appearance: none;
-                 width: 18px;
-                 height: 18px;
-                 border-radius: 50%;
-                 background: #fff;
-                 box-shadow: 0 0 15px var(--accent-cyan);
-                 cursor: pointer;
-                 transition: 0.2s;
-             }
+            .eq-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: #fff;
+                box-shadow: 0 0 15px var(--accent-cyan);
+                cursor: pointer;
+                transition: 0.2s;
+            }
 
-         .eq-slider:hover::-webkit-slider-thumb {
-             transform: scale(1.2);
-             box-shadow: 0 0 20px var(--accent-cyan), 0 0 5px #fff;
-         }
-         /* Queue Playlist */
-         .queue-list {
-             display: flex;
-             flex-direction: column;
-             gap: 8px;
-             flex-grow: 1;
-             margin-top: 10px;
-         }
+            .eq-slider:hover::-webkit-slider-thumb {
+                transform: scale(1.2);
+                box-shadow: 0 0 20px var(--accent-cyan), 0 0 5px #fff;
+            }
+        /* Queue Playlist */
+        .queue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+            margin-top: 10px;
+        }
 
-         .queue-item {
-             background: rgba(255,255,255,0.04);
-             border: 1px solid rgba(255,255,255,0.08);
-             border-radius: 12px;
-             padding: 10px 14px;
-             display: flex;
-             align-items: center;
-             justify-content: space-between;
-             cursor: grab;
-             transition: 0.2s;
-             box-shadow: var(--glass-highlight);
-         }
+        .queue-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: grab;
+            transition: 0.2s;
+            box-shadow: var(--glass-highlight);
+        }
 
-             .queue-item:hover {
-                 background: rgba(255,255,255,0.1);
-                 border-color: rgba(255,255,255,0.2);
-             }
+            .queue-item:hover {
+                background: rgba(255,255,255,0.1);
+                border-color: rgba(255,255,255,0.2);
+            }
 
-             .queue-item.active {
-                 border-color: var(--accent-purple);
-                 background: rgba(121, 40, 202, 0.15);
-                 box-shadow: 0 0 15px rgba(121, 40, 202, 0.3), var(--glass-highlight);
-             }
+            .queue-item.active {
+                border-color: var(--accent-purple);
+                background: rgba(121, 40, 202, 0.15);
+                box-shadow: 0 0 15px rgba(121, 40, 202, 0.3), var(--glass-highlight);
+            }
 
-                 .queue-item.active .qi-name {
-                     color: var(--accent-cyan);
-                     font-weight: 700;
-                 }
+                .queue-item.active .qi-name {
+                    color: var(--accent-cyan);
+                    font-weight: 700;
+                }
 
-             .queue-item:active {
-                 cursor: grabbing;
-             }
+            .queue-item:active {
+                cursor: grabbing;
+            }
 
-         .qi-info {
-             display: flex;
-             flex-direction: column;
-             overflow: hidden;
-         }
+        .qi-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-         .qi-name {
-             font-size: 13px;
-             font-weight: 600;
-             white-space: nowrap;
-             overflow: hidden;
-             text-overflow: ellipsis;
-             color: #fff;
-         }
+        .qi-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #fff;
+        }
 
-         .qi-actions {
-             display: flex;
-             gap: 6px;
-         }
+        .qi-actions {
+            display: flex;
+            gap: 6px;
+        }
 
-         .qi-btn {
-             background: none;
-             border: none;
-             color: var(--text-muted);
-             cursor: pointer;
-             padding: 4px;
-             border-radius: 4px;
-             transition: 0.2s;
-         }
+        .qi-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
 
-             .qi-btn:hover {
-                 color: var(--accent-red);
-                 background: rgba(255,0,0,0.1);
-             }
+            .qi-btn:hover {
+                color: var(--accent-red);
+                background: rgba(255,0,0,0.1);
+            }
 
-         .status-row {
-             display: flex;
-             justify-content: space-between;
-             font-size: 11px;
-             color: var(--text-muted);
-             margin-top: 8px;
-         }
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
 
-         .toast-region {
-             position: fixed;
-             bottom: 20px;
-             right: 20px;
-             z-index: 200;
-             display: flex;
-             flex-direction: column;
-             gap: 10px;
-         }
+        .toast-region {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-         .toast {
-             background: rgba(0,0,0,0.8);
-             border-left: 4px solid var(--accent-cyan);
-             padding: 12px 20px;
-             border-radius: 8px;
-             color: #fff;
-             font-size: 13px;
-             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-             animation: slideIn 0.3s ease-out forwards;
-         }
+        .toast {
+            background: rgba(0,0,0,0.8);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease-out forwards;
+        }
 
-             .toast.is-leaving {
-                 animation: slideOut 0.3s ease-in forwards;
-             }
+            .toast.is-leaving {
+                animation: slideOut 0.3s ease-in forwards;
+            }
 
-         @keyframes slideIn {
-             from {
-                 transform: translateX(100%);
-                 opacity: 0;
-             }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
 
-             to {
-                 transform: translateX(0);
-                 opacity: 1;
-             }
-         }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
-         @keyframes slideOut {
-             from {
-                 transform: translateX(0);
-                 opacity: 1;
-             }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
 
-             to {
-                 transform: translateX(100%);
-                 opacity: 0;
-             }
-         }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
 
-         /* Centered, scrollable settings modal */
-         .settings-modal {
-             position: fixed;
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -40%) scale(0.9);
-             opacity: 0;
-             pointer-events: none; /* Ensures it cannot be clicked when closed */
-             background: rgba(12, 10, 24, 0.75);
-             backdrop-filter: blur(35px);
-             -webkit-backdrop-filter: blur(35px);
-             border: 1px solid rgba(255, 255, 255, 0.2);
-             border-radius: 24px;
-             padding: 24px;
-             z-index: 150;
-             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), var(--glass-highlight);
-             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-             display: flex;
-             flex-direction: column;
-             gap: 20px;
-             /* Size and Scrolling constraints */
-             width: 90%;
-             max-width: 420px;
-             max-height: 75vh; /* Prevents it from going off-screen */
-             overflow-y: auto; /* Enables vertical scrolling */
-             overflow-x: hidden;
-         }
+        /* Centered, scrollable settings modal */
+        .settings-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%) scale(0.9);
+            opacity: 0;
+            pointer-events: none; /* Ensures it cannot be clicked when closed */
+            background: rgba(12, 10, 24, 0.75);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 24px;
+            z-index: 150;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), var(--glass-highlight);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            /* Size and Scrolling constraints */
+            width: 90%;
+            max-width: 420px;
+            max-height: 75vh; /* Prevents it from going off-screen */
+            overflow-y: auto; /* Enables vertical scrolling */
+            overflow-x: hidden;
+        }
 
-             .settings-modal.open {
-                 transform: translate(-50%, -50%) scale(1);
-                 opacity: 1;
-                 pointer-events: all; /* Re-enables clicking when open */
-             }
+            .settings-modal.open {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                pointer-events: all; /* Re-enables clicking when open */
+            }
 
-         /* Accessibility focus */
-         *:focus-visible {
-             outline: 2px solid var(--accent-cyan);
-             outline-offset: 2px;
-         }
+        /* Accessibility focus */
+        *:focus-visible {
+            outline: 2px solid var(--accent-cyan);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body>
 
-  <div class="backdrop-orbs" aria-hidden="true">
-    <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
-  </div>
+    <div class="backdrop-orbs" aria-hidden="true">
+        <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+    </div>
 
-  <canvas id="visualizer" aria-hidden="true"></canvas>
+    <canvas id="visualizer" aria-hidden="true"></canvas>
 
-  <audio id="audio-engine" preload="metadata"></audio>
-  <input type="file" id="file-input" accept="audio/*,video/*" multiple style="display: none;">
+    <audio id="audio-engine" preload="metadata"></audio>
+    <input type="file" id="file-input" accept="audio/*,video/*" multiple style="display: none;">
 
-  <!-- Main Player Panel -->
-  <main id="app-panel">
-    
-    <header class="panel-header">
-      <div class="brand-info">
-        <div class="brand-badge-container">
-          <span class="brand-badge">Spectrolizer</span>
-          <span class="live-badge" id="live-badge">Live Mic</span>
+    <!-- Main Player Panel -->
+    <main id="app-panel">
+
+        <header class="panel-header">
+            <div class="brand-info">
+                <div class="brand-badge-container">
+                    <span class="brand-badge">Spectrolizer</span>
+                    <span class="live-badge" id="live-badge">Live Mic</span>
+                </div>
+                <h1 class="track-title" id="track-title" aria-live="polite">No File Loaded</h1>
+            </div>
+
+            <div class="header-actions">
+                <!-- Hardware / Action Top Tray Buttons -->
+                <button class="glass-btn btn-xs" id="btn-system-audio" title="Toggle System Audio Input" aria-label="Toggle System Audio Input">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="14" rx="2"></rect>
+                        <path d="M8 21h8"></path>
+                        <path d="M10 18v3"></path>
+                        <path d="M14 18v3"></path>
+                        <path d="M9 10v2"></path>
+                        <path d="M12 8v6"></path>
+                        <path d="M15 10v2"></path>
+                    </svg>
+                </button>
+                <button class="glass-btn btn-xs" id="btn-mic" title="Toggle Live Microphone Input">
+                    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                </button>
+                <button class="glass-btn btn-xs" id="btn-queue" title="Toggle Queue Drawer">
+                    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                </button>
+                <!-- Relocated Settings Center Button to Top Tray -->
+                <button class="glass-btn btn-xs" id="btn-settings" title="Toggle Settings Center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+
+                <!-- Toggle View Mode Button -->
+                <button class="glass-btn icon-btn" id="btn-toggle-view" title="Toggle Compact / Expanded Mode" aria-pressed="false">
+                    <svg id="svg-view-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                    <span id="view-btn-text">Expand</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="album-art-section">
+            <div class="album-art-wrapper" id="album-art-btn" title="Click or Drop Local Media" role="button" tabindex="0">
+                <div class="vinyl-disc" aria-hidden="true"><div class="vinyl-center"></div></div>
+                <div class="upload-overlay" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span id="upload-label">Load Local Media</span>
+                </div>
+                <!-- Recording Overlay -->
+                <div class="rec-overlay">
+                    <div class="rec-dot"></div>
+                    <div class="rec-time" id="rec-time-display">00:00</div>
+                    <button class="rec-stop-btn" id="btn-stop-rec">Stop Export</button>
+                </div>
+            </div>
         </div>
-        <h1 class="track-title" id="track-title" aria-live="polite">No File Loaded</h1>
-      </div>
 
-      <div class="header-actions">
-        <!-- Hardware / Action Top Tray Buttons -->
-        <button class="glass-btn btn-xs" id="btn-record" title="Record WebM Export">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor"></circle></svg>
-        </button>
-        <button class="glass-btn btn-xs" id="btn-mic" title="Toggle Live Microphone Input">
-          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-        </button>
-        <button class="glass-btn btn-xs" id="btn-queue" title="Toggle Queue Drawer">
-          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-        </button>
-        <!-- Relocated Settings Center Button to Top Tray -->
-        <button class="glass-btn btn-xs" id="btn-settings" title="Toggle Settings Center">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        </button>
-        
-        <!-- Toggle View Mode Button -->
-        <button class="glass-btn icon-btn" id="btn-toggle-view" title="Toggle Compact / Expanded Mode" aria-pressed="false">
-          <svg id="svg-view-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline>
-            <line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line>
-          </svg>
-          <span id="view-btn-text">Expand</span>
-        </button>
-      </div>
-    </header>
-
-    <div class="album-art-section">
-      <div class="album-art-wrapper" id="album-art-btn" title="Click or Drop Local Media" role="button" tabindex="0">
-        <div class="vinyl-disc" aria-hidden="true"><div class="vinyl-center"></div></div>
-        <div class="upload-overlay" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <span id="upload-label">Load Local Media</span>
+        <!-- Seek Timeline -->
+        <div class="timeline-container">
+            <span class="time-display" id="time-current">0:00</span>
+            <div class="progress-wrapper">
+                <input type="range" id="seek-bar" value="0" min="0" max="100" step="0.1" aria-label="Timeline seek slider">
+            </div>
+            <span class="time-display" id="time-total">0:00</span>
         </div>
-        <!-- Recording Overlay -->
-        <div class="rec-overlay">
-          <div class="rec-dot"></div>
-          <div class="rec-time" id="rec-time-display">00:00</div>
-          <button class="rec-stop-btn" id="btn-stop-rec">Stop Export</button>
+
+        <!-- Hardware Playback Controls -->
+        <div class="playback-controls-row">
+            <div class="main-controls-group">
+                <button class="glass-btn btn-small" id="btn-shuffle" title="Toggle Shuffle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                </button>
+                <button class="glass-btn btn-small" id="btn-prev" title="Previous / Rewind">
+                    <svg viewBox="0 0 24 24"><polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon></svg>
+                </button>
+                <button class="glass-btn btn-large" id="btn-play" title="Play / Pause">
+                    <svg id="svg-play-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button class="glass-btn btn-small" id="btn-next" title="Next / Forward">
+                    <svg viewBox="0 0 24 24"><polygon points="13 19 22 12 13 5 13 19"></polygon><polygon points="2 19 11 12 2 5 2 19"></polygon></svg>
+                </button>
+                <button class="glass-btn btn-small" id="btn-loop" title="Toggle Loop" aria-pressed="false">
+                    <svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg>
+                </button>
+            </div>
+
+            <div class="main-controls-group">
+                <button class="glass-btn btn-small" id="btn-eq" title="Equalizer Filters">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                </button>
+                <div class="volume-container">
+                    <button class="glass-btn btn-small" id="btn-mute" title="Toggle Mute">
+                        <svg id="svg-mute-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </button>
+                    <input type="range" id="volume-bar" value="0.8" min="0" max="1" step="0.01" aria-label="Volume slider">
+                </div>
+                <button class="glass-btn btn-small" id="btn-fullscreen" title="Toggle Fullscreen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                </button>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Seek Timeline -->
-    <div class="timeline-container">
-      <span class="time-display" id="time-current">0:00</span>
-      <div class="progress-wrapper">
-        <input type="range" id="seek-bar" value="0" min="0" max="100" step="0.1" aria-label="Timeline seek slider">
-      </div>
-      <span class="time-display" id="time-total">0:00</span>
-    </div>
-
-    <!-- Hardware Playback Controls -->
-    <div class="playback-controls-row">
-      <div class="main-controls-group">
-        <button class="glass-btn btn-small" id="btn-shuffle" title="Toggle Shuffle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
-        </button>
-        <button class="glass-btn btn-small" id="btn-prev" title="Previous / Rewind">
-          <svg viewBox="0 0 24 24"><polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon></svg>
-        </button>
-        <button class="glass-btn btn-large" id="btn-play" title="Play / Pause">
-          <svg id="svg-play-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        </button>
-        <button class="glass-btn btn-small" id="btn-next" title="Next / Forward">
-          <svg viewBox="0 0 24 24"><polygon points="13 19 22 12 13 5 13 19"></polygon><polygon points="2 19 11 12 2 5 2 19"></polygon></svg>
-        </button>
-        <button class="glass-btn btn-small" id="btn-loop" title="Toggle Loop" aria-pressed="false">
-          <svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="M7 22l-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg>
-        </button>
-      </div>
-
-      <div class="main-controls-group">
-        <button class="glass-btn btn-small" id="btn-eq" title="Equalizer Filters">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-        </button>
-        <div class="volume-container">
-          <button class="glass-btn btn-small" id="btn-mute" title="Toggle Mute">
-            <svg id="svg-mute-icon" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-          </button>
-          <input type="range" id="volume-bar" value="0.8" min="0" max="1" step="0.01" aria-label="Volume slider">
+        <div class="status-row" aria-live="polite">
+            <span id="status-message">Ready — open an audio or video file</span>
+            <span aria-hidden="true">-[Space] Play/Pause · ←/→ Seek · M Mute · F Fullscreen · ↑/↓ Volume-</span>
         </div>
-        <button class="glass-btn btn-small" id="btn-fullscreen" title="Toggle Fullscreen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+    </main>
+
+    <!-- Left Drawer: Multi-Track Playlist Queue -->
+    <aside class="premium-drawer drawer-left" id="queue-drawer">
+        <div class="drawer-header">
+            <span class="drawer-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                Play Queue
+            </span>
+            <button class="glass-btn btn-small" id="btn-close-queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+        <button class="file-btn-label" style="background: rgba(0, 223, 216, 0.15); border: 1px solid var(--accent-cyan); color: #fff; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; box-shadow: var(--glass-highlight);" onclick="document.getElementById('file-input').click()">
+            + Add Tracks
         </button>
-      </div>
+        <div class="queue-list" id="queue-list"></div>
+    </aside>
+
+    <!-- Right Drawer: Advanced Settings Center -->
+    <aside class="settings-modal" id="settings-drawer">
+        <div class="drawer-header">
+            <span class="drawer-title">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Configuration
+            </span>
+            <button class="glass-btn btn-small" id="btn-close-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+
+        <div class="setting-group">
+            <span class="setting-label">Recording</span>
+            <span class="setting-desc">Export the visualizer and audio as a WebM file</span>
+            <button class="glass-btn icon-btn" id="btn-record" title="Record WebM Export" style="align-self: flex-start;">
+                <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="6" fill="currentColor"></circle></svg>
+                <span>Record WebM</span>
+            </button>
+        </div>
+
+        <div class="setting-group">
+            <span class="setting-label">Visualizer Mode</span>
+            <span class="setting-desc">Primary drawing engine style</span>
+            <select id="style-select" class="premium-select">
+                <option value="bars">Frequency Bars</option>
+                <option value="mirrored">Mirrored Spectrum</option>
+                <option value="radial">Circular Radial</option>
+                <option value="wave">Oscillating Wave</option>
+            </select>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Color Theme</span>
+            <span class="setting-desc">Render pass color gradient</span>
+            <select id="theme-select" class="premium-select">
+                <option value="neon">Neon Gradient</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="monochrome">Monochrome</option>
+            </select>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Analyzer FFT Size</span>
+            <span class="setting-desc">Higher size = greater frequency resolution</span>
+            <select id="fft-select" class="premium-select">
+                <option value="512">512</option>
+                <option value="1024">1024</option>
+                <option value="2048" selected>2048</option>
+                <option value="4096">4096</option>
+                <option value="8192">8192 (Max)</option>
+            </select>
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Analyzer Smoothing</span>
+            <span class="setting-desc">Time-constant averaging for frames</span>
+            <input type="range" id="smooth-bar" value="0.85" min="0" max="0.99" step="0.01">
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Bass Boost Render Bias</span>
+            <span class="setting-desc">Visual amplifier for low frequencies</span>
+            <input type="range" id="bass-bar" value="1.35" min="1" max="3" step="0.05">
+        </div>
+        <div class="setting-group">
+            <span class="setting-label">Shadow Glow Strength</span>
+            <span class="setting-desc">Context 2D shadow pass intensity</span>
+            <input type="range" id="glow-bar" value="16" min="0" max="50" step="1">
+        </div>
+    </aside>
+
+    <!-- Web Audio EQ Popup Modal -->
+    <div class="eq-modal" id="eq-modal">
+        <div class="drawer-header" style="padding-bottom: 0;">
+            <span class="drawer-title">Audio Filter Rack</span>
+            <button class="glass-btn btn-small" id="btn-close-eq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>
+        <div class="eq-presets">
+            <div class="eq-preset-pill active" data-preset="flat">Flat</div>
+            <div class="eq-preset-pill" data-preset="electronic">Electronic</div>
+            <div class="eq-preset-pill" data-preset="acoustic">Acoustic</div>
+            <div class="eq-preset-pill" data-preset="deepbass">Deep Bass</div>
+            <div class="eq-preset-pill" data-preset="vocal">Vocal</div>
+        </div>
+        <div class="eq-sliders-container">
+            <div class="eq-band">
+                <input type="range" class="eq-slider" id="eq-bass" min="-15" max="15" value="0" step="0.5">
+                <span>BASS</span>
+            </div>
+            <div class="eq-band">
+                <input type="range" class="eq-slider" id="eq-mid" min="-15" max="15" value="0" step="0.5">
+                <span>MID</span>
+            </div>
+            <div class="eq-band">
+                <input type="range" class="eq-slider" id="eq-treb" min="-15" max="15" value="0" step="0.5">
+                <span>TREB</span>
+            </div>
+        </div>
     </div>
 
-    <div class="status-row" aria-live="polite">
-      <span id="status-message">Ready — open an audio or video file</span>
-      <span aria-hidden="true">-[Space] Play/Pause · ←/→ Seek · M Mute · F Fullscreen · ↑/↓ Volume-</span>
-    </div>
-  </main>
+    <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Left Drawer: Multi-Track Playlist Queue -->
-  <aside class="premium-drawer drawer-left" id="queue-drawer">
-    <div class="drawer-header">
-      <span class="drawer-title">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
-        Play Queue
-      </span>
-      <button class="glass-btn btn-small" id="btn-close-queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-    </div>
-    <button class="file-btn-label" style="background: rgba(0, 223, 216, 0.15); border: 1px solid var(--accent-cyan); color: #fff; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; box-shadow: var(--glass-highlight);" onclick="document.getElementById('file-input').click()">
-        + Add Tracks
-    </button>
-    <div class="queue-list" id="queue-list"></div>
-  </aside>
-
-  <!-- Right Drawer: Advanced Settings Center -->
-  <aside class="settings-modal" id="settings-drawer">
-    <div class="drawer-header">
-      <span class="drawer-title">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        Configuration
-      </span>
-      <button class="glass-btn btn-small" id="btn-close-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-    </div>
-    
-    <div class="setting-group">
-      <span class="setting-label">Visualizer Mode</span>
-      <span class="setting-desc">Primary drawing engine style</span>
-      <select id="style-select" class="premium-select">
-        <option value="bars">Frequency Bars</option>
-        <option value="mirrored">Mirrored Spectrum</option>
-        <option value="radial">Circular Radial</option>
-        <option value="wave">Oscillating Wave</option>
-      </select>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Color Theme</span>
-      <span class="setting-desc">Render pass color gradient</span>
-      <select id="theme-select" class="premium-select">
-        <option value="neon">Neon Gradient</option>
-        <option value="cyberpunk">Cyberpunk</option>
-        <option value="monochrome">Monochrome</option>
-      </select>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Analyzer FFT Size</span>
-      <span class="setting-desc">Higher size = greater frequency resolution</span>
-      <select id="fft-select" class="premium-select">
-        <option value="512">512</option>
-        <option value="1024">1024</option>
-        <option value="2048" selected>2048</option>
-        <option value="4096">4096</option>
-        <option value="8192">8192 (Max)</option>
-      </select>
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Analyzer Smoothing</span>
-      <span class="setting-desc">Time-constant averaging for frames</span>
-      <input type="range" id="smooth-bar" value="0.85" min="0" max="0.99" step="0.01">
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Bass Boost Render Bias</span>
-      <span class="setting-desc">Visual amplifier for low frequencies</span>
-      <input type="range" id="bass-bar" value="1.35" min="1" max="3" step="0.05">
-    </div>
-    <div class="setting-group">
-      <span class="setting-label">Shadow Glow Strength</span>
-      <span class="setting-desc">Context 2D shadow pass intensity</span>
-      <input type="range" id="glow-bar" value="16" min="0" max="50" step="1">
-    </div>
-  </aside>
-
-  <!-- Web Audio EQ Popup Modal -->
-  <div class="eq-modal" id="eq-modal">
-    <div class="drawer-header" style="padding-bottom: 0;">
-      <span class="drawer-title">Audio Filter Rack</span>
-      <button class="glass-btn btn-small" id="btn-close-eq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-    </div>
-    <div class="eq-presets">
-      <div class="eq-preset-pill active" data-preset="flat">Flat</div>
-      <div class="eq-preset-pill" data-preset="electronic">Electronic</div>
-      <div class="eq-preset-pill" data-preset="acoustic">Acoustic</div>
-      <div class="eq-preset-pill" data-preset="deepbass">Deep Bass</div>
-      <div class="eq-preset-pill" data-preset="vocal">Vocal</div>
-    </div>
-    <div class="eq-sliders-container">
-      <div class="eq-band">
-        <input type="range" class="eq-slider" id="eq-bass" min="-15" max="15" value="0" step="0.5">
-        <span>BASS</span>
-      </div>
-      <div class="eq-band">
-        <input type="range" class="eq-slider" id="eq-mid" min="-15" max="15" value="0" step="0.5">
-        <span>MID</span>
-      </div>
-      <div class="eq-band">
-        <input type="range" class="eq-slider" id="eq-treb" min="-15" max="15" value="0" step="0.5">
-        <span>TREB</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
-
-  <script>
-    // Register Service Worker for Offline PWA Support
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
+    <script>
+        // Register Service Worker for Offline PWA Support
+        if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('Service Worker registered successfully:', reg.scope))
-          .catch(err => console.error('Service Worker registration failed:', err));
-      });
-    }
+        .then(reg => console.log('Service Worker registered successfully:', reg.scope))
+        .catch(err => console.error('Service Worker registration failed:', err));
+        });
+        }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      'use strict';
+        document.addEventListener('DOMContentLoaded', () => {
+        'use strict';
 
-      /* ==========================================================================
-         1. DOM CACHE & CONSTANTS
-         ========================================================================== */
-      const $ = (id) => document.getElementById(id);
-      const appPanel = $('app-panel');
-      const audioEngine = $('audio-engine');
-      const fileInput = $('file-input');
-      const albumArtBtn = $('album-art-btn');
-      const uploadLabel = $('upload-label');
-      const trackTitle = $('track-title');
-      
-      const seekBar = $('seek-bar');
-      const timeCurrent = $('time-current');
-      const timeTotal = $('time-total');
-      const volumeBar = $('volume-bar');
-      
-      const btnPlay = $('btn-play'), svgPlayIcon = $('svg-play-icon');
-      const btnPrev = $('btn-prev'), btnNext = $('btn-next');
-      const btnLoop = $('btn-loop'), btnShuffle = $('btn-shuffle');
-      const btnMute = $('btn-mute'), svgMuteIcon = $('svg-mute-icon');
-      const btnToggleView = $('btn-toggle-view'), viewBtnText = $('view-btn-text'), svgViewIcon = $('svg-view-icon');
-      const btnFullscreen = $('btn-fullscreen');
-      
-      const settingsDrawer = $('settings-drawer'), btnSettings = $('btn-settings'), btnCloseSettings = $('btn-close-settings');
-      const queueDrawer = $('queue-drawer'), btnQueue = $('btn-queue'), btnCloseQueue = $('btn-close-queue'), queueList = $('queue-list');
-      const eqModal = $('eq-modal'), btnEq = $('btn-eq'), btnCloseEq = $('btn-close-eq');
-      const btnMic = $('btn-mic'), btnRecord = $('btn-record'), btnStopRec = $('btn-stop-rec'), recTimeDisplay = $('rec-time-display');
-      
-      const styleSelect = $('style-select'), themeSelect = $('theme-select'), fftSelect = $('fft-select');
-      const smoothBar = $('smooth-bar'), bassBar = $('bass-bar'), glowBar = $('glow-bar');
-      const eqBass = $('eq-bass'), eqMid = $('eq-mid'), eqTreb = $('eq-treb');
-      const eqPresets = document.querySelectorAll('.eq-preset-pill');
+        /* ==========================================================================
+        1. DOM CACHE & CONSTANTS
+        ========================================================================== */
+        const $ = (id) => document.getElementById(id);
+        const appPanel = $('app-panel');
+        const audioEngine = $('audio-engine');
+        const fileInput = $('file-input');
+        const albumArtBtn = $('album-art-btn');
+        const uploadLabel = $('upload-label');
+        const trackTitle = $('track-title');
 
-      const statusMessage = $('status-message'), toastRegion = $('toast-region');
-      const canvas = $('visualizer'), ctx = canvas.getContext('2d');
+        const seekBar = $('seek-bar');
+        const timeCurrent = $('time-current');
+        const timeTotal = $('time-total');
+        const volumeBar = $('volume-bar');
 
-      const STORAGE_KEY = 'spectrolizer.preferences.v1';
-      const SUPPORTED_FILE_PREFIXES = ['audio/', 'video/'];
-      const DEFAULT_PREFERENCES = Object.freeze({
+        const btnPlay = $('btn-play'), svgPlayIcon = $('svg-play-icon');
+        const btnPrev = $('btn-prev'), btnNext = $('btn-next');
+        const btnLoop = $('btn-loop'), btnShuffle = $('btn-shuffle');
+        const btnMute = $('btn-mute'), svgMuteIcon = $('svg-mute-icon');
+        const btnToggleView = $('btn-toggle-view'), viewBtnText = $('view-btn-text'), svgViewIcon = $('svg-view-icon');
+        const btnFullscreen = $('btn-fullscreen');
+
+        const settingsDrawer = $('settings-drawer'), btnSettings = $('btn-settings'), btnCloseSettings = $('btn-close-settings');
+        const queueDrawer = $('queue-drawer'), btnQueue = $('btn-queue'), btnCloseQueue = $('btn-close-queue'), queueList = $('queue-list');
+        const eqModal = $('eq-modal'), btnEq = $('btn-eq'), btnCloseEq = $('btn-close-eq');
+        const btnSystemAudio = $('btn-system-audio'), btnMic = $('btn-mic'), btnRecord = $('btn-record'), btnStopRec = $('btn-stop-rec'), recTimeDisplay = $('rec-time-display');
+
+        const styleSelect = $('style-select'), themeSelect = $('theme-select'), fftSelect = $('fft-select');
+        const smoothBar = $('smooth-bar'), bassBar = $('bass-bar'), glowBar = $('glow-bar');
+        const eqBass = $('eq-bass'), eqMid = $('eq-mid'), eqTreb = $('eq-treb');
+        const eqPresets = document.querySelectorAll('.eq-preset-pill');
+
+        const statusMessage = $('status-message'), toastRegion = $('toast-region');
+        const canvas = $('visualizer'), ctx = canvas.getContext('2d');
+
+        const STORAGE_KEY = 'spectrolizer.preferences.v1';
+        const SUPPORTED_FILE_PREFIXES = ['audio/', 'video/'];
+        const DEFAULT_PREFERENCES = Object.freeze({
         style: 'bars', theme: 'neon', fftSize: 2048, volume: 0.8, loop: false, expanded: false, shuffle: false,
         smoothing: 0.85, bassBoost: 1.35, glowStrength: 16,
         eqB: 0, eqM: 0, eqT: 0
-      });
+        });
 
-      let VISUALIZER_SETTINGS = {
+        let VISUALIZER_SETTINGS = {
         smoothing: 0.85, bassBoost: 1.35, glowStrength: 16
-      };
+        };
 
-      const PLAY_ICON = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
-      const PAUSE_ICON = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
-      const SOUND_ICON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>';
-      const MUTE_ICON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
-      const EXPAND_ICON = '<polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line>';
-      const COMPRESS_ICON = '<polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line>';
+        const PLAY_ICON = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
+        const PAUSE_ICON = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+        const SOUND_ICON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>';
+        const MUTE_ICON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
+        const EXPAND_ICON = '<polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line>';
+        const COMPRESS_ICON = '<polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line>';
 
-      const THEME_GRADIENT_STOPS = Object.freeze({
+        const THEME_GRADIENT_STOPS = Object.freeze({
         neon: [[0, '#00dfd8'], [0.5, '#b000ff'], [1, '#ff007f']],
         cyberpunk: [[0, '#fce029'], [0.5, '#00ffcc'], [1, '#ff003c']],
         monochrome: [[0, '#ffffff'], [0.5, '#888888'], [1, '#333333']]
-      });
-      const SHADOW_COLORS_BY_STYLE = {
+        });
+        const SHADOW_COLORS_BY_STYLE = {
         bars: { neon: '#b000ff', cyberpunk: '#00ffcc', monochrome: '#ffffff' },
         mirrored: { neon: '#00dfd8', cyberpunk: '#fce029', monochrome: '#ffffff' },
         radial: { neon: '#ff007f', cyberpunk: '#ff003c', monochrome: '#aaaaaa' },
         wave: { neon: '#00dfd8', cyberpunk: '#00ffcc', monochrome: '#ffffff' }
-      };
+        };
 
-      /* ==========================================================================
-         2. APPLICATION STATE
-         ========================================================================== */
-      const state = {
+        /* ==========================================================================
+        2. APPLICATION STATE
+        ========================================================================== */
+        const state = {
         audioContext: null, analyser: null, source: null,
         eqNodes: { low: null, mid: null, high: null },
-        micStream: null, micSource: null, isLive: false,
+        micStream: null, micSource: null, systemAudioStream: null, systemAudioSource: null, liveInputType: null, isLive: false,
         mediaRecorder: null, recordedChunks: [], recordingInterval: null, recStartTime: 0,
         frequencyData: null, waveformData: null,
         playlist: [], currentIndex: -1, shuffle: false, draggedItem: null,
@@ -1358,51 +1377,51 @@
         uiTimeout: 0, transitionTimeout: 0, uiActivityScheduled: false,
         previousVolume: DEFAULT_PREFERENCES.volume, currentStyle: DEFAULT_PREFERENCES.style, currentTheme: DEFAULT_PREFERENCES.theme,
         gradientCache: new Map()
-      };
+        };
 
-      /* ==========================================================================
-         3. UTILITIES & PREFERENCES
-         ========================================================================== */
-      function clamp(value, min, max) { return Math.min(Math.max(Number(value), min), max); }
-      function formatTime(seconds) {
+        /* ==========================================================================
+        3. UTILITIES & PREFERENCES
+        ========================================================================== */
+        function clamp(value, min, max) { return Math.min(Math.max(Number(value), min), max); }
+        function formatTime(seconds) {
         if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);
 
         if (h > 0) {
-          return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
         return `${m}:${String(s).padStart(2, '0')}`;
-      }
-      function setStatus(msg) { statusMessage.textContent = msg; }
-      function showToast(msg, type = 'info') {
+        }
+        function setStatus(msg) { statusMessage.textContent = msg; }
+        function showToast(msg, type = 'info') {
         const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
         toastRegion.appendChild(t); setTimeout(() => { t.classList.add('is-leaving'); t.addEventListener('animationend', () => t.remove()); }, 2600);
-      }
+        }
 
-      function readPreferences() {
+        function readPreferences() {
         try { return { ...DEFAULT_PREFERENCES, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; }
         catch { return { ...DEFAULT_PREFERENCES }; }
-      }
-      function savePreferences() {
+        }
+        function savePreferences() {
         const pref = {
-          style: state.currentStyle, theme: state.currentTheme, fftSize: Number(fftSelect.value),
-          volume: audioEngine.volume, loop: audioEngine.loop, expanded: document.body.classList.contains('expanded'), shuffle: state.shuffle,
-          smoothing: VISUALIZER_SETTINGS.smoothing, bassBoost: VISUALIZER_SETTINGS.bassBoost, glowStrength: VISUALIZER_SETTINGS.glowStrength,
-          eqB: Number(eqBass.value), eqM: Number(eqMid.value), eqT: Number(eqTreb.value)
+        style: state.currentStyle, theme: state.currentTheme, fftSize: Number(fftSelect.value),
+        volume: audioEngine.volume, loop: audioEngine.loop, expanded: document.body.classList.contains('expanded'), shuffle: state.shuffle,
+        smoothing: VISUALIZER_SETTINGS.smoothing, bassBoost: VISUALIZER_SETTINGS.bassBoost, glowStrength: VISUALIZER_SETTINGS.glowStrength,
+        eqB: Number(eqBass.value), eqM: Number(eqMid.value), eqT: Number(eqTreb.value)
         };
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pref)); } catch {}
-      }
+        }
 
-      function applyPreferences() {
+        function applyPreferences() {
         const p = readPreferences();
         state.currentStyle = THEME_GRADIENT_STOPS[p.theme] ? p.style : DEFAULT_PREFERENCES.style;
         state.currentTheme = THEME_GRADIENT_STOPS[p.theme] ? p.theme : DEFAULT_PREFERENCES.theme;
-        
+
         styleSelect.value = state.currentStyle; themeSelect.value = state.currentTheme;
         fftSelect.value = [512,1024,2048,4096,8192].includes(Number(p.fftSize)) ? String(p.fftSize) : "2048";
-        
+
         VISUALIZER_SETTINGS.smoothing = clamp(p.smoothing, 0, 0.99);
         VISUALIZER_SETTINGS.bassBoost = clamp(p.bassBoost, 1, 3);
         VISUALIZER_SETTINGS.glowStrength = clamp(p.glowStrength, 0, 50);
@@ -1415,9 +1434,9 @@
         setVolume(clamp(p.volume, 0, 1), false);
         setExpanded(Boolean(p.expanded), false);
         updateAllSliderProgress();
-      }
+        }
 
-      function updateSliderProgress(slider) {
+        function updateSliderProgress(slider) {
         if (!slider) return;
 
         const min = parseFloat(slider.min) || 0;
@@ -1425,485 +1444,559 @@
         const val = parseFloat(slider.value) || 0;
 
         // Handles Infinity or invalid durations smoothly
-        const percentage = (Number.isFinite(max) && max > min) 
-          ? ((val - min) / (max - min)) * 100 
-          : 0;
+        const percentage = (Number.isFinite(max) && max > min)
+        ? ((val - min) / (max - min)) * 100
+        : 0;
 
         slider.style.setProperty('--progress', `${percentage}%`);
-      }
-      function updateAllSliderProgress() {
+        }
+        function updateAllSliderProgress() {
         [seekBar, volumeBar, smoothBar, bassBar, glowBar, eqBass, eqMid, eqTreb].forEach(updateSliderProgress);
-      }
+        }
 
-      /* ==========================================================================
-         4. AUDIO GRAPH & EQ NODES
-         ========================================================================== */
-      function resizeCanvas() {
+        /* ==========================================================================
+        4. AUDIO GRAPH & EQ NODES
+        ========================================================================== */
+        function resizeCanvas() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.round(window.innerWidth * dpr); canvas.height = Math.round(window.innerHeight * dpr);
         canvas.style.width = `${window.innerWidth}px`; canvas.style.height = `${window.innerHeight}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0); state.gradientCache.clear();
-      }
+        }
 
-      function allocateAudioBuffers() {
+        function allocateAudioBuffers() {
         if (!state.analyser) return;
         const len = state.analyser.frequencyBinCount;
         state.frequencyData = new Uint8Array(len); state.waveformData = new Uint8Array(len);
-      }
+        }
 
-      function setupAudioContext() {
+        function setupAudioContext() {
         if (state.isAudioSetup) return true;
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return false;
         try {
-          state.audioContext = new AudioCtx();
-          state.analyser = state.audioContext.createAnalyser();
-          state.analyser.fftSize = Number(fftSelect.value);
-          
-          state.eqNodes.low = state.audioContext.createBiquadFilter(); state.eqNodes.low.type = 'lowshelf'; state.eqNodes.low.frequency.value = 250;
-          state.eqNodes.mid = state.audioContext.createBiquadFilter(); state.eqNodes.mid.type = 'peaking'; state.eqNodes.mid.frequency.value = 1000; state.eqNodes.mid.Q.value = 1;
-          state.eqNodes.high = state.audioContext.createBiquadFilter(); state.eqNodes.high.type = 'highshelf'; state.eqNodes.high.frequency.value = 4000;
-          applyEqValues();
+        state.audioContext = new AudioCtx();
+        state.analyser = state.audioContext.createAnalyser();
+        state.analyser.fftSize = Number(fftSelect.value);
 
-          state.source = state.audioContext.createMediaElementSource(audioEngine);
-          state.source.connect(state.eqNodes.low);
-          state.eqNodes.low.connect(state.eqNodes.mid);
-          state.eqNodes.mid.connect(state.eqNodes.high);
-          state.eqNodes.high.connect(state.analyser);
-          state.analyser.connect(state.audioContext.destination);
+        state.eqNodes.low = state.audioContext.createBiquadFilter(); state.eqNodes.low.type = 'lowshelf'; state.eqNodes.low.frequency.value = 250;
+        state.eqNodes.mid = state.audioContext.createBiquadFilter(); state.eqNodes.mid.type = 'peaking'; state.eqNodes.mid.frequency.value = 1000; state.eqNodes.mid.Q.value = 1;
+        state.eqNodes.high = state.audioContext.createBiquadFilter(); state.eqNodes.high.type = 'highshelf'; state.eqNodes.high.frequency.value = 4000;
+        applyEqValues();
 
-          allocateAudioBuffers(); state.isAudioSetup = true; startRendering(); return true;
+        state.source = state.audioContext.createMediaElementSource(audioEngine);
+        state.source.connect(state.eqNodes.low);
+        state.eqNodes.low.connect(state.eqNodes.mid);
+        state.eqNodes.mid.connect(state.eqNodes.high);
+        state.eqNodes.high.connect(state.analyser);
+        state.analyser.connect(state.audioContext.destination);
+
+        allocateAudioBuffers(); state.isAudioSetup = true; startRendering(); return true;
         } catch (e) { return false; }
-      }
+        }
 
-      async function ensureAudioContextActive() {
+        async function ensureAudioContextActive() {
         if (!setupAudioContext()) return false;
         if (state.audioContext.state === 'suspended') await state.audioContext.resume();
         return true;
-      }
+        }
 
-      // Update in your JavaScript
-      function applyEqValues() {
+        // Update in your JavaScript
+        function applyEqValues() {
         if (state.eqNodes.low) {
-          state.eqNodes.low.gain.value = Number(eqBass.value);
-          state.eqNodes.mid.gain.value = Number(eqMid.value);
-          state.eqNodes.high.gain.value = Number(eqTreb.value);
+        state.eqNodes.low.gain.value = Number(eqBass.value);
+        state.eqNodes.mid.gain.value = Number(eqMid.value);
+        state.eqNodes.high.gain.value = Number(eqTreb.value);
         }
 
         // KEY FIX: Directly update cyan track fill whenever EQ changes
         [eqBass, eqMid, eqTreb].forEach(updateSliderProgress);
 
         savePreferences();
-      }
+        }
 
-      /* ==========================================================================
-         5. PLAYLIST / QUEUE MANAGEMENT
-         ========================================================================== */
-      function renderQueue() {
+        /* ==========================================================================
+        5. PLAYLIST / QUEUE MANAGEMENT
+        ========================================================================== */
+        function renderQueue() {
         queueList.innerHTML = '';
         state.playlist.forEach((item, index) => {
-          const div = document.createElement('div'); div.className = `queue-item ${index === state.currentIndex && !state.isLive ? 'active' : ''}`;
-          div.draggable = true;
-          div.innerHTML = `<div class="qi-info"><span class="qi-name" title="${item.name}">${item.name}</span></div>
-            <div class="qi-actions">
-              <button class="qi-btn play-btn" title="Play"><svg viewBox="0 0 24 24" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg></button>
-              <button class="qi-btn rm-btn" title="Remove"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-            </div>`;
-          
-          div.querySelector('.play-btn').onclick = (e) => { e.stopPropagation(); playTrack(index); };
-          div.querySelector('.rm-btn').onclick = (e) => { e.stopPropagation(); removeTrack(index); };
-          
-          div.ondragstart = () => { state.draggedItem = index; div.style.opacity = '0.5'; };
-          div.ondragover = (e) => e.preventDefault();
-          div.ondrop = (e) => {
-            e.preventDefault(); const dragged = state.playlist.splice(state.draggedItem, 1)[0];
-            state.playlist.splice(index, 0, dragged);
-            if (state.currentIndex === state.draggedItem) state.currentIndex = index;
-            else if (state.currentIndex > state.draggedItem && state.currentIndex <= index) state.currentIndex--;
-            else if (state.currentIndex < state.draggedItem && state.currentIndex >= index) state.currentIndex++;
-            renderQueue();
-          };
-          div.ondragend = () => { div.style.opacity = '1'; state.draggedItem = null; };
-          
-          queueList.appendChild(div);
-        });
-      }
+        const div = document.createElement('div'); div.className = `queue-item ${index === state.currentIndex && !state.isLive ? 'active' : ''}`;
+        div.draggable = true;
+        div.innerHTML = `<div class="qi-info"><span class="qi-name" title="${item.name}">${item.name}</span></div>
+        <div class="qi-actions">
+        <button class="qi-btn play-btn" title="Play"><svg viewBox="0 0 24 24" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg></button>
+        <button class="qi-btn rm-btn" title="Remove"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        </div>`;
 
-      async function addFilesToQueue(files) {
+        div.querySelector('.play-btn').onclick = (e) => { e.stopPropagation(); playTrack(index); };
+        div.querySelector('.rm-btn').onclick = (e) => { e.stopPropagation(); removeTrack(index); };
+
+        div.ondragstart = () => { state.draggedItem = index; div.style.opacity = '0.5'; };
+        div.ondragover = (e) => e.preventDefault();
+        div.ondrop = (e) => {
+        e.preventDefault(); const dragged = state.playlist.splice(state.draggedItem, 1)[0];
+        state.playlist.splice(index, 0, dragged);
+        if (state.currentIndex === state.draggedItem) state.currentIndex = index;
+        else if (state.currentIndex > state.draggedItem && state.currentIndex <= index) state.currentIndex--;
+        else if (state.currentIndex < state.draggedItem && state.currentIndex >= index) state.currentIndex++;
+        renderQueue();
+        };
+        div.ondragend = () => { div.style.opacity = '1'; state.draggedItem = null; };
+
+        queueList.appendChild(div);
+        });
+        }
+
+        async function addFilesToQueue(files) {
         let added = 0;
         let rejected = 0;
 
         for (const file of files) {
-          // Explicitly added .weba, .webm, .opus, and .m4a
-         const isSupportedExtension = /\.(mp3|wav|ogg|m4a|m4b|aac|flac|mp4|webm|weba|mov|opus|mka|wma)$/i.test(file.name);
-         const isSupportedMime = SUPPORTED_FILE_PREFIXES.some(p => file.type && file.type.startsWith(p));
+        // Explicitly added .weba, .webm, .opus, and .m4a
+        const isSupportedExtension = /\.(mp3|wav|ogg|m4a|m4b|aac|flac|mp4|webm|weba|mov|opus|mka|wma)$/i.test(file.name);
+        const isSupportedMime = SUPPORTED_FILE_PREFIXES.some(p => file.type && file.type.startsWith(p));
 
-         if (file instanceof File && (isSupportedMime || isSupportedExtension)) {
-           state.playlist.push({ 
-             file, 
-             url: URL.createObjectURL(file), 
-             name: file.name.replace(/\.[^/.]+$/, '') 
-           });
-           added++;
-         } else {
-           rejected++;
-         }
-       }
+        if (file instanceof File && (isSupportedMime || isSupportedExtension)) {
+        state.playlist.push({
+        file,
+        url: URL.createObjectURL(file),
+        name: file.name.replace(/\.[^/.]+$/, '')
+        });
+        added++;
+        } else {
+        rejected++;
+        }
+        }
 
-       if (added > 0) {
-         renderQueue(); 
-         showToast(`Added ${added} track(s) to Queue`);
-         if (state.currentIndex === -1) playTrack(0);
-       } else if (rejected > 0) {
-         showToast(`File format not supported.`, 'error');
-       }
-      }
+        if (added > 0) {
+        renderQueue();
+        showToast(`Added ${added} track(s) to Queue`);
+        if (state.currentIndex === -1) playTrack(0);
+        } else if (rejected > 0) {
+        showToast(`File format not supported.`, 'error');
+        }
+        }
 
-      function removeTrack(index) {
+        function removeTrack(index) {
         URL.revokeObjectURL(state.playlist[index].url);
         state.playlist.splice(index, 1);
         if (state.currentIndex === index) { state.currentIndex = -1; audioEngine.pause(); audioEngine.src = ""; trackTitle.textContent = "No File Loaded"; }
         else if (state.currentIndex > index) state.currentIndex--;
         renderQueue();
-      }
-
-      async function playTrack(index) {
-        if (index < 0 || index >= state.playlist.length) return;
-        if (state.isLive) await stopLiveMic();
-  
-        state.currentIndex = index; 
-        renderQueue();
-  
-        const item = state.playlist[index];
-        
-        albumArtBtn.classList.add('is-loading'); 
-        uploadLabel.textContent = 'Loading...';
-  
-        if (!(await ensureAudioContextActive())) {
-          albumArtBtn.classList.remove('is-loading');
-          uploadLabel.textContent = 'Load Local Media';
-          return;
         }
-        
+
+        async function playTrack(index) {
+        if (index < 0 || index >= state.playlist.length) return;
+        if (state.isLive) await stopLiveInput();
+
+        state.currentIndex = index;
+        renderQueue();
+
+        const item = state.playlist[index];
+
+        albumArtBtn.classList.add('is-loading');
+        uploadLabel.textContent = 'Loading...';
+
+        if (!(await ensureAudioContextActive())) {
+        albumArtBtn.classList.remove('is-loading');
+        uploadLabel.textContent = 'Load Local Media';
+        return;
+        }
+
         // 1. Force full buffering mode for long/unindexed WebM/WEBA files
         audioEngine.preload = 'auto';
-        audioEngine.src = item.url; 
+        audioEngine.src = item.url;
         audioEngine.load();
 
-        trackTitle.textContent = item.name; 
+        trackTitle.textContent = item.name;
         document.title = `${item.name} — Spectrolizer`;
 
-        try { 
-          await audioEngine.play(); 
+        try {
+        await audioEngine.play();
         } catch (e) {
-          console.error("Playback failed:", e);
-           // 2. Alert if autoplay blocked or decoding failed
-          if (typeof showToast === 'function') {
-             showToast("Unable to play track or file format issue", "error");
-          }
-        } finally { 
-          albumArtBtn.classList.remove('is-loading'); 
-          uploadLabel.textContent = 'Load Local Media'; 
+        console.error("Playback failed:", e);
+        // 2. Alert if autoplay blocked or decoding failed
+        if (typeof showToast === 'function') {
+        showToast("Unable to play track or file format issue", "error");
         }
-      }
+        } finally {
+        albumArtBtn.classList.remove('is-loading');
+        uploadLabel.textContent = 'Load Local Media';
+        }
+        }
 
-      function nextTrack() {
+        function nextTrack() {
         if (state.playlist.length === 0) return;
         let nextIdx = state.shuffle ? Math.floor(Math.random() * state.playlist.length) : state.currentIndex + 1;
         if (nextIdx >= state.playlist.length) nextIdx = 0;
         playTrack(nextIdx);
-      }
-      function prevTrack() {
+        }
+        function prevTrack() {
         if (state.playlist.length === 0) return;
         let prevIdx = state.currentIndex - 1;
         if (prevIdx < 0) prevIdx = state.playlist.length - 1;
         playTrack(prevIdx);
-      }
+        }
 
-      /* ==========================================================================
-         6. LIVE MIC INPUT
-         ========================================================================== */
-      async function toggleLiveMic() {
-        if (state.isLive) await stopLiveMic();
-        else await startLiveMic();
-      }
-      
-      async function startLiveMic() {
+        /* ==========================================================================
+        6. LIVE INPUTS
+        ========================================================================== */
+        async function toggleLiveMic() {
+        if (state.isLive && state.liveInputType === 'mic') await stopLiveInput();
+        else {
+        if (state.isLive) await stopLiveInput();
+        await startLiveMic();
+        }
+        }
+
+        async function toggleSystemAudio() {
+        if (state.isLive && state.liveInputType === 'system') await stopLiveInput();
+        else {
+        if (state.isLive) await stopLiveInput();
+        await startSystemAudio();
+        }
+        }
+
+        async function startLiveMic() {
         if (!(await ensureAudioContextActive())) return;
+        if (!navigator.mediaDevices?.getUserMedia) return showToast("Microphone input is not supported in this browser", "error");
         try {
-          state.micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: false }});
-          state.micSource = state.audioContext.createMediaStreamSource(state.micStream);
-          
-          audioEngine.pause(); btnMic.classList.add('active'); document.body.classList.add('live-mode');
-          trackTitle.textContent = "Live Studio Input";
-          
-          state.analyser.disconnect();
-          state.micSource.connect(state.eqNodes.low);
-          state.isLive = true;
-          showToast("Live Mic connected (Muted output to prevent feedback)", "info");
-        } catch(e) { showToast("Microphone access denied or unavailable", "error"); }
-      }
+        state.micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: false }});
+        state.micSource = state.audioContext.createMediaStreamSource(state.micStream);
 
-      async function stopLiveMic() {
+        audioEngine.pause();
+        btnMic.classList.add('active');
+        btnSystemAudio.classList.remove('active');
+        document.body.classList.add('live-mode');
+        trackTitle.textContent = "Live Studio Input";
+
+        state.analyser.disconnect();
+        state.micSource.connect(state.eqNodes.low);
+        state.liveInputType = 'mic';
+        state.isLive = true;
+        showToast("Live Mic connected (Muted output to prevent feedback)", "info");
+        } catch(e) { showToast("Microphone access denied or unavailable", "error"); }
+        }
+
+        async function startSystemAudio() {
+        if (!(await ensureAudioContextActive())) return;
+        if (!navigator.mediaDevices?.getDisplayMedia) return showToast("System audio input is not supported in this browser", "error");
+        try {
+        // Browsers require display capture permission to obtain shared system/tab audio.
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false
+        }
+        });
+        const audioTracks = stream.getAudioTracks();
+        if (!audioTracks.length) {
+        stream.getTracks().forEach(t => t.stop());
+        showToast("No system audio was shared. Enable Share audio in the picker.", "error");
+        return;
+        }
+
+        // Keep only the audio track; video is requested solely because the capture API requires it.
+        stream.getVideoTracks().forEach(t => t.stop());
+        state.systemAudioStream = new MediaStream(audioTracks);
+        state.systemAudioSource = state.audioContext.createMediaStreamSource(state.systemAudioStream);
+
+        audioEngine.pause();
+        btnSystemAudio.classList.add('active');
+        btnMic.classList.remove('active');
+        document.body.classList.add('live-mode');
+        trackTitle.textContent = "System Audio Input";
+
+        state.analyser.disconnect();
+        state.systemAudioSource.connect(state.eqNodes.low);
+        state.liveInputType = 'system';
+        state.isLive = true;
+
+        audioTracks[0].addEventListener('ended', () => {
+        if (state.liveInputType === 'system') stopLiveInput();
+        }, { once: true });
+        showToast("System audio connected", "info");
+        } catch(e) {
+        if (e?.name !== 'AbortError' && e?.name !== 'NotAllowedError') showToast("Unable to capture system audio", "error");
+        }
+        }
+
+        async function stopLiveInput() {
         if (!state.isLive) return;
+
         if (state.micStream) state.micStream.getTracks().forEach(t => t.stop());
+        if (state.systemAudioStream) state.systemAudioStream.getTracks().forEach(t => t.stop());
         if (state.micSource) state.micSource.disconnect();
+        if (state.systemAudioSource) state.systemAudioSource.disconnect();
+
+        state.micStream = null;
+        state.systemAudioStream = null;
+        state.micSource = null;
+        state.systemAudioSource = null;
         state.analyser.connect(state.audioContext.destination);
-        
-        btnMic.classList.remove('active'); document.body.classList.remove('live-mode');
-        state.isLive = false; showToast("Live Mic disconnected");
+
+        btnMic.classList.remove('active');
+        btnSystemAudio.classList.remove('active');
+        document.body.classList.remove('live-mode');
+        state.liveInputType = null;
+        state.isLive = false;
+        showToast("Live input disconnected");
         if (state.currentIndex >= 0) playTrack(state.currentIndex);
         else trackTitle.textContent = "No File Loaded";
-      }
+        }
 
-      /* ==========================================================================
-         7. RECORDING & EXPORT
-         ========================================================================== */
-      function toggleRecording() {
+        /* ==========================================================================
+        7. RECORDING & EXPORT
+        ========================================================================== */
+        function toggleRecording() {
         if (state.mediaRecorder && state.mediaRecorder.state === 'recording') stopRecording();
         else startRecording();
-      }
+        }
 
-      function startRecording() {
+        function startRecording() {
         if (!state.isAudioSetup) return showToast("Play audio or enable mic first to record.");
         const vStream = canvas.captureStream(60);
         const dest = state.audioContext.createMediaStreamDestination();
         state.analyser.connect(dest);
-        
+
         const combined = new MediaStream([...vStream.getTracks(), ...dest.stream.getAudioTracks()]);
         try {
-          state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
+        state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
         } catch(e) {
-          state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
+        state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
         }
-        
+
         state.recordedChunks = [];
         state.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) state.recordedChunks.push(e.data); };
         state.mediaRecorder.onstop = exportRecording;
-        
+
         state.mediaRecorder.start();
         document.body.classList.add('is-recording'); btnRecord.classList.add('active');
         state.recStartTime = Date.now();
         state.recordingInterval = setInterval(() => {
-          const s = Math.floor((Date.now() - state.recStartTime)/1000);
-          recTimeDisplay.textContent = formatTime(s);
+        const s = Math.floor((Date.now() - state.recStartTime)/1000);
+        recTimeDisplay.textContent = formatTime(s);
         }, 1000);
         showToast("Recording started...");
-      }
+        }
 
-      function stopRecording() {
+        function stopRecording() {
         if (!state.mediaRecorder) return;
         state.mediaRecorder.stop(); clearInterval(state.recordingInterval);
         document.body.classList.remove('is-recording'); btnRecord.classList.remove('active');
-      }
+        }
 
-      function exportRecording() {
+        function exportRecording() {
         const blob = new Blob(state.recordedChunks, { type: 'video/webm' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.style.display = 'none';
         a.href = url; a.download = `Spectrolizer_Export_${Date.now()}.webm`;
         document.body.appendChild(a); a.click(); setTimeout(() => { document.body.removeChild(a); window.URL.revokeObjectURL(url); }, 100);
         showToast("Recording Exported Successfully!", "success");
-      }
+        }
 
-      /* ==========================================================================
-         8. CORE PLAYER & UI CONTROLS
-         ========================================================================== */
-      async function togglePlay() {
-        if (state.isLive) return showToast("Disable Live Mic to use playback");
+        /* ==========================================================================
+        8. CORE PLAYER & UI CONTROLS
+        ========================================================================== */
+        async function togglePlay() {
+        if (state.isLive) return showToast("Disable live input to use playback");
         if (state.playlist.length === 0) return fileInput.click();
         if (!(await ensureAudioContextActive())) return;
         if (audioEngine.paused) audioEngine.play(); else audioEngine.pause();
-      }
+        }
 
-      function setVolume(val, persist = true) {
+        function setVolume(val, persist = true) {
         const v = clamp(val, 0, 1); audioEngine.volume = v; volumeBar.value = v; updateSliderProgress(volumeBar);
         svgMuteIcon.innerHTML = v === 0 ? MUTE_ICON : SOUND_ICON; btnMute.setAttribute('aria-label', v === 0 ? 'Unmute' : 'Mute');
         if (v > 0) state.previousVolume = v; if (persist) savePreferences();
-      }
+        }
 
-      function setExpanded(isExp, anim = true) {
+        function setExpanded(isExp, anim = true) {
         clearTimeout(state.transitionTimeout);
         if (anim && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          document.body.classList.remove('is-transitioning'); void document.body.offsetWidth; document.body.classList.add('is-transitioning');
+        document.body.classList.remove('is-transitioning'); void document.body.offsetWidth; document.body.classList.add('is-transitioning');
         }
         document.body.classList.toggle('expanded', isExp);
         viewBtnText.textContent = isExp ? 'Compact' : 'Expand'; svgViewIcon.innerHTML = isExp ? COMPRESS_ICON : EXPAND_ICON;
         btnToggleView.setAttribute('aria-pressed', String(isExp));
         if (anim) state.transitionTimeout = setTimeout(() => document.body.classList.remove('is-transitioning'), 500);
         resetUITimeout(); savePreferences();
-      }
+        }
 
-      function resetUITimeout() {
+        function resetUITimeout() {
         appPanel.style.opacity = '1'; clearTimeout(state.uiTimeout);
         if (document.body.classList.contains('expanded') && !audioEngine.paused && !document.body.classList.contains('is-recording')) {
-          state.uiTimeout = setTimeout(() => appPanel.style.opacity = '0.25', 3500);
+        state.uiTimeout = setTimeout(() => appPanel.style.opacity = '0.25', 3500);
         }
-      }
-      function scheduleUIActivity() {
+        }
+        function scheduleUIActivity() {
         if (state.uiActivityScheduled) return;
         state.uiActivityScheduled = true; requestAnimationFrame(() => { state.uiActivityScheduled = false; resetUITimeout(); });
-      }
+        }
 
-      /* ==========================================================================
-         9. VISUALIZER RENDERING ENGINE
-         ========================================================================== */
-      function getCachedGradient(sKey, x1, y1, x2, y2) {
+        /* ==========================================================================
+        9. VISUALIZER RENDERING ENGINE
+        ========================================================================== */
+        function getCachedGradient(sKey, x1, y1, x2, y2) {
         const k = `${sKey}:${state.currentTheme}:${window.innerWidth}x${window.innerHeight}`;
         if (!state.gradientCache.has(k)) {
-          const g = ctx.createLinearGradient(x1, y1, x2, y2);
-          (THEME_GRADIENT_STOPS[state.currentTheme] || THEME_GRADIENT_STOPS.neon).forEach(([off, col]) => g.addColorStop(off, col));
-          state.gradientCache.set(k, g);
+        const g = ctx.createLinearGradient(x1, y1, x2, y2);
+        (THEME_GRADIENT_STOPS[state.currentTheme] || THEME_GRADIENT_STOPS.neon).forEach(([off, col]) => g.addColorStop(off, col));
+        state.gradientCache.set(k, g);
         } return state.gradientCache.get(k);
-      }
+        }
 
-      function startRendering() {
+        function startRendering() {
         if (state.isRendering || document.hidden) return;
         state.isRendering = true; state.renderFrameId = requestAnimationFrame(renderVis);
-      }
+        }
 
-      function stopRendering() {
+        function stopRendering() {
         if (!state.isRendering) return;
         cancelAnimationFrame(state.renderFrameId); state.isRendering = false;
-      }
+        }
 
-      function renderVis() {
+        function renderVis() {
         if (!state.isRendering) return;
         const w = window.innerWidth, h = window.innerHeight;
         ctx.fillStyle = document.body.classList.contains('expanded') ? 'rgba(0, 0, 0, 0.25)' : 'rgba(8, 6, 16, 0.3)';
         ctx.fillRect(0, 0, w, h);
 
         if (state.analyser && state.frequencyData) {
-          state.analyser.smoothingTimeConstant = VISUALIZER_SETTINGS.smoothing;
-          const len = state.analyser.frequencyBinCount, cX = w/2, cY = h/2;
-          
-          if (state.currentStyle === 'wave') state.analyser.getByteTimeDomainData(state.waveformData);
-          else state.analyser.getByteFrequencyData(state.frequencyData);
+        state.analyser.smoothingTimeConstant = VISUALIZER_SETTINGS.smoothing;
+        const len = state.analyser.frequencyBinCount, cX = w/2, cY = h/2;
 
-          ctx.shadowBlur = state.currentTheme === 'monochrome' ? 10 : VISUALIZER_SETTINGS.glowStrength;
+        if (state.currentStyle === 'wave') state.analyser.getByteTimeDomainData(state.waveformData);
+        else state.analyser.getByteFrequencyData(state.frequencyData);
 
-          const palette = SHADOW_COLORS_BY_STYLE[state.currentStyle] || SHADOW_COLORS_BY_STYLE.bars;
-          ctx.shadowColor = palette[state.currentTheme] || '#fff';
+        ctx.shadowBlur = state.currentTheme === 'monochrome' ? 10 : VISUALIZER_SETTINGS.glowStrength;
 
-          if (state.currentStyle === 'mirrored') {
-            const bW = (w/len)*2.5; let x=0; ctx.fillStyle = getCachedGradient('mirrored', 0, h, 0, 0);
-            for(let i=0; i<len&&x<w; i++){ const bH = (state.frequencyData[i]/255)*cY*0.75; ctx.fillRect(x, cY-bH, bW, bH); ctx.fillRect(x, cY, bW, bH); x+=bW+1; }
-          } else if (state.currentStyle === 'radial') {
-            const rad=Math.min(cX,cY)*0.35, bc=Math.max(1,Math.floor(len*0.5)), step=(Math.PI*2)/bc;
-            ctx.strokeStyle = getCachedGradient('radial', 0, 0, cX*2, cY*2); ctx.lineWidth=3; ctx.beginPath();
-            for(let i=0; i<bc; i++){
-              const val = (state.frequencyData[i]/255)*rad*1.5, ang=i*step;
-              ctx.moveTo(cX+Math.cos(ang)*rad, cY+Math.sin(ang)*rad); ctx.lineTo(cX+Math.cos(ang)*(rad+val), cY+Math.sin(ang)*(rad+val));
-            } ctx.stroke();
-          } else if (state.currentStyle === 'wave') {
-            const sw=w/len; let x=0; ctx.lineWidth=3; ctx.strokeStyle = getCachedGradient('wave', 0, 0, w, 0); ctx.beginPath();
-            for(let i=0; i<len; i++){ const y = (state.waveformData[i]/128)*cY; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); x+=sw; } ctx.stroke();
-          } else {
-            const bW = (w/len)*2.5; let x=0; ctx.fillStyle = getCachedGradient('bars', 0, h, 0, 0);
-            for(let i=0; i<len&&x<w; i++){
-              let val = state.frequencyData[i]/255; if(i<len*0.15) val *= VISUALIZER_SETTINGS.bassBoost;
-              const bH = Math.pow(val, 1.2)*h*0.65; ctx.fillRect(x, h-bH, bW, bH); x+=bW+1;
-            }
-          }
-          ctx.shadowBlur = 0;
+        const palette = SHADOW_COLORS_BY_STYLE[state.currentStyle] || SHADOW_COLORS_BY_STYLE.bars;
+        ctx.shadowColor = palette[state.currentTheme] || '#fff';
+
+        if (state.currentStyle === 'mirrored') {
+        const bW = (w/len)*2.5; let x=0; ctx.fillStyle = getCachedGradient('mirrored', 0, h, 0, 0);
+        for(let i=0; i<len&&x<w; i++){ const bH = (state.frequencyData[i]/255)*cY*0.75; ctx.fillRect(x, cY-bH, bW, bH); ctx.fillRect(x, cY, bW, bH); x+=bW+1; }
+        } else if (state.currentStyle === 'radial') {
+        const rad=Math.min(cX,cY)*0.35, bc=Math.max(1,Math.floor(len*0.5)), step=(Math.PI*2)/bc;
+        ctx.strokeStyle = getCachedGradient('radial', 0, 0, cX*2, cY*2); ctx.lineWidth=3; ctx.beginPath();
+        for(let i=0; i<bc; i++){
+        const val = (state.frequencyData[i]/255)*rad*1.5, ang=i*step;
+        ctx.moveTo(cX+Math.cos(ang)*rad, cY+Math.sin(ang)*rad); ctx.lineTo(cX+Math.cos(ang)*(rad+val), cY+Math.sin(ang)*(rad+val));
+        } ctx.stroke();
+        } else if (state.currentStyle === 'wave') {
+        const sw=w/len; let x=0; ctx.lineWidth=3; ctx.strokeStyle = getCachedGradient('wave', 0, 0, w, 0); ctx.beginPath();
+        for(let i=0; i<len; i++){ const y = (state.waveformData[i]/128)*cY; if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); x+=sw; } ctx.stroke();
+        } else {
+        const bW = (w/len)*2.5; let x=0; ctx.fillStyle = getCachedGradient('bars', 0, h, 0, 0);
+        for(let i=0; i<len&&x<w; i++){
+        let val = state.frequencyData[i]/255; if(i<len*0.15) val *= VISUALIZER_SETTINGS.bassBoost;
+        const bH = Math.pow(val, 1.2)*h*0.65; ctx.fillRect(x, h-bH, bW, bH); x+=bW+1;
+        }
+        }
+        ctx.shadowBlur = 0;
         }
         state.renderFrameId = requestAnimationFrame(renderVis);
-      }
+        }
 
-      /* ==========================================================================
-         10. EVENT LISTENERS
-         ========================================================================== */
-      // Drawers & Modals Toggle Controls
-      btnSettings.onclick = () => settingsDrawer.classList.toggle('open');
-      btnCloseSettings.onclick = () => settingsDrawer.classList.remove('open');
-      
-      btnQueue.onclick = () => queueDrawer.classList.toggle('open');
-      btnCloseQueue.onclick = () => queueDrawer.classList.remove('open');
-      
-      btnEq.onclick = () => eqModal.classList.toggle('open');
-      btnCloseEq.onclick = () => eqModal.classList.remove('open');
+        /* ==========================================================================
+        10. EVENT LISTENERS
+        ========================================================================== */
+        // Drawers & Modals Toggle Controls
+        btnSettings.onclick = () => settingsDrawer.classList.toggle('open');
+        btnCloseSettings.onclick = () => settingsDrawer.classList.remove('open');
 
-      // EQ & Setting Binds
-      [eqBass, eqMid, eqTreb].forEach(s => s.addEventListener('input', applyEqValues));
-      eqPresets.forEach(p => p.onclick = (e) => {
+        btnQueue.onclick = () => queueDrawer.classList.toggle('open');
+        btnCloseQueue.onclick = () => queueDrawer.classList.remove('open');
+
+        btnEq.onclick = () => eqModal.classList.toggle('open');
+        btnCloseEq.onclick = () => eqModal.classList.remove('open');
+
+        // EQ & Setting Binds
+        [eqBass, eqMid, eqTreb].forEach(s => s.addEventListener('input', applyEqValues));
+        eqPresets.forEach(p => p.onclick = (e) => {
         eqPresets.forEach(el => el.classList.remove('active')); p.classList.add('active');
         const vals = { flat:[0,0,0], electronic:[4, -2, 3], acoustic:[-2, 3, 2], deepbass:[8, 0, -2], vocal:[-3, 4, -1] }[p.dataset.preset];
         eqBass.value=vals[0]; eqMid.value=vals[1]; eqTreb.value=vals[2]; applyEqValues();
-      });
-      styleSelect.onchange = (e) => { state.currentStyle = e.target.value; savePreferences(); };
-      themeSelect.onchange = (e) => { state.currentTheme = e.target.value; state.gradientCache.clear(); savePreferences(); };
-      fftSelect.onchange = (e) => { if (state.analyser) { state.analyser.fftSize = Number(e.target.value); allocateAudioBuffers(); } savePreferences(); };
-      
-      smoothBar.oninput = (e) => { VISUALIZER_SETTINGS.smoothing = Number(e.target.value); updateSliderProgress(smoothBar); savePreferences(); };
-      bassBar.oninput = (e) => { VISUALIZER_SETTINGS.bassBoost = Number(e.target.value); updateSliderProgress(bassBar); savePreferences(); };
-      glowBar.oninput = (e) => { VISUALIZER_SETTINGS.glowStrength = Number(e.target.value); updateSliderProgress(glowBar); savePreferences(); };
+        });
+        styleSelect.onchange = (e) => { state.currentStyle = e.target.value; savePreferences(); };
+        themeSelect.onchange = (e) => { state.currentTheme = e.target.value; state.gradientCache.clear(); savePreferences(); };
+        fftSelect.onchange = (e) => { if (state.analyser) { state.analyser.fftSize = Number(e.target.value); allocateAudioBuffers(); } savePreferences(); };
 
-      // Media Actions
-      albumArtBtn.onclick = () => fileInput.click();
-      fileInput.onchange = (e) => addFilesToQueue(e.target.files);
-      btnPlay.onclick = togglePlay;
-      btnNext.onclick = nextTrack;
-      btnPrev.onclick = prevTrack;
-      btnMute.onclick = () => setVolume(audioEngine.volume > 0 ? 0 : (state.previousVolume || 0.8));
-      volumeBar.oninput = (e) => setVolume(e.target.value);
-      
-      btnLoop.onclick = () => { audioEngine.loop = !audioEngine.loop; btnLoop.classList.toggle('active', audioEngine.loop); savePreferences(); };
-      btnShuffle.onclick = () => { state.shuffle = !state.shuffle; btnShuffle.classList.toggle('active', state.shuffle); savePreferences(); };
-      btnToggleView.onclick = () => setExpanded(!document.body.classList.contains('expanded'));
-      btnFullscreen.onclick = async () => { if (!document.fullscreenElement) await document.documentElement.requestFullscreen().catch(()=>{}); else await document.exitFullscreen(); };
-      
-      btnMic.onclick = toggleLiveMic;
-      btnRecord.onclick = toggleRecording;
-      btnStopRec.onclick = stopRecording;
+        smoothBar.oninput = (e) => { VISUALIZER_SETTINGS.smoothing = Number(e.target.value); updateSliderProgress(smoothBar); savePreferences(); };
+        bassBar.oninput = (e) => { VISUALIZER_SETTINGS.bassBoost = Number(e.target.value); updateSliderProgress(bassBar); savePreferences(); };
+        glowBar.oninput = (e) => { VISUALIZER_SETTINGS.glowStrength = Number(e.target.value); updateSliderProgress(glowBar); savePreferences(); };
 
-      // Audio Engine Triggers
-      audioEngine.onloadedmetadata = () => { seekBar.max = String(audioEngine.duration||100); timeTotal.textContent = formatTime(audioEngine.duration); updateSliderProgress(seekBar); };
-      audioEngine.ontimeupdate = () => { if(!state.isSeeking){ seekBar.value=audioEngine.currentTime; timeCurrent.textContent=formatTime(audioEngine.currentTime); updateSliderProgress(seekBar); }};
-      audioEngine.onended = () => { if(!audioEngine.loop) nextTrack(); };
-      audioEngine.onplay = () => { svgPlayIcon.innerHTML=PAUSE_ICON; albumArtBtn.classList.add('playing'); setStatus(`Playing ${trackTitle.textContent}`); resetUITimeout(); };
-      audioEngine.onpause = () => { svgPlayIcon.innerHTML=PLAY_ICON; albumArtBtn.classList.remove('playing'); if(!audioEngine.ended) setStatus(`Paused — ${trackTitle.textContent}`); };
-      // Catch container decoding errors for corrupted or unindexed WebM/WEBA files
-      audioEngine.onerror = () => {
+        // Media Actions
+        albumArtBtn.onclick = () => fileInput.click();
+        fileInput.onchange = (e) => addFilesToQueue(e.target.files);
+        btnPlay.onclick = togglePlay;
+        btnNext.onclick = nextTrack;
+        btnPrev.onclick = prevTrack;
+        btnMute.onclick = () => setVolume(audioEngine.volume > 0 ? 0 : (state.previousVolume || 0.8));
+        volumeBar.oninput = (e) => setVolume(e.target.value);
+
+        btnLoop.onclick = () => { audioEngine.loop = !audioEngine.loop; btnLoop.classList.toggle('active', audioEngine.loop); savePreferences(); };
+        btnShuffle.onclick = () => { state.shuffle = !state.shuffle; btnShuffle.classList.toggle('active', state.shuffle); savePreferences(); };
+        btnToggleView.onclick = () => setExpanded(!document.body.classList.contains('expanded'));
+        btnFullscreen.onclick = async () => { if (!document.fullscreenElement) await document.documentElement.requestFullscreen().catch(()=>{}); else await document.exitFullscreen(); };
+
+        btnSystemAudio.onclick = toggleSystemAudio;
+        btnMic.onclick = toggleLiveMic;
+        btnRecord.onclick = toggleRecording;
+        btnStopRec.onclick = stopRecording;
+
+        // Audio Engine Triggers
+        audioEngine.onloadedmetadata = () => { seekBar.max = String(audioEngine.duration||100); timeTotal.textContent = formatTime(audioEngine.duration); updateSliderProgress(seekBar); };
+        audioEngine.ontimeupdate = () => { if(!state.isSeeking){ seekBar.value=audioEngine.currentTime; timeCurrent.textContent=formatTime(audioEngine.currentTime); updateSliderProgress(seekBar); }};
+        audioEngine.onended = () => { if(!audioEngine.loop) nextTrack(); };
+        audioEngine.onplay = () => { svgPlayIcon.innerHTML=PAUSE_ICON; albumArtBtn.classList.add('playing'); setStatus(`Playing ${trackTitle.textContent}`); resetUITimeout(); };
+        audioEngine.onpause = () => { svgPlayIcon.innerHTML=PLAY_ICON; albumArtBtn.classList.remove('playing'); if(!audioEngine.ended) setStatus(`Paused — ${trackTitle.textContent}`); };
+        // Catch container decoding errors for corrupted or unindexed WebM/WEBA files
+        audioEngine.onerror = () => {
         const err = audioEngine.error;
         if (err) {
-          console.error("Audio playback error code:", err.code, err.message);
-          showToast("Error loading file: Corrupt header or missing WebM index.", "error");
+        console.error("Audio playback error code:", err.code, err.message);
+        showToast("Error loading file: Corrupt header or missing WebM index.", "error");
         }
-      };
-      
-      seekBar.oninput = (e) => { state.isSeeking = true; timeCurrent.textContent = formatTime(e.target.value); updateSliderProgress(seekBar); };
-      seekBar.onchange = (e) => { audioEngine.currentTime = e.target.value; state.isSeeking = false; };
+        };
 
-      // Drag and Drop
-      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => albumArtBtn.addEventListener(ev, e => { e.preventDefault(); albumArtBtn.classList.toggle('is-dragging', ev!=='dragleave'&&ev!=='drop'); }));
-      albumArtBtn.ondrop = (e) => { e.preventDefault(); if (e.dataTransfer?.files?.length) addFilesToQueue(e.dataTransfer.files); };
+        seekBar.oninput = (e) => { state.isSeeking = true; timeCurrent.textContent = formatTime(e.target.value); updateSliderProgress(seekBar); };
+        seekBar.onchange = (e) => { audioEngine.currentTime = e.target.value; state.isSeeking = false; };
 
-      // Window Events
-      document.onfullscreenchange = () => { btnFullscreen.classList.toggle('active', !!document.fullscreenElement); };
-      document.onvisibilitychange = () => document.hidden ? stopRendering() : (state.isAudioSetup && startRendering());
-      window.onresize = resizeCanvas;
-      ['mousemove', 'click', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, scheduleUIActivity, { passive: true }));
-      
-      window.onkeydown = (e) => {
+        // Drag and Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => albumArtBtn.addEventListener(ev, e => { e.preventDefault(); albumArtBtn.classList.toggle('is-dragging', ev!=='dragleave'&&ev!=='drop'); }));
+        albumArtBtn.ondrop = (e) => { e.preventDefault(); if (e.dataTransfer?.files?.length) addFilesToQueue(e.dataTransfer.files); };
+
+        // Window Events
+        document.onfullscreenchange = () => { btnFullscreen.classList.toggle('active', !!document.fullscreenElement); };
+        document.onvisibilitychange = () => document.hidden ? stopRendering() : (state.isAudioSetup && startRendering());
+        window.onresize = resizeCanvas;
+        ['mousemove', 'click', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, scheduleUIActivity, { passive: true }));
+
+        window.onkeydown = (e) => {
         if (e.target?.tagName?.match(/INPUT|SELECT|TEXTAREA/) || e.target?.isContentEditable) return;
         switch(e.key.toLowerCase()) {
-          case ' ': e.preventDefault(); togglePlay(); break;
-          case 'arrowleft': e.preventDefault(); audioEngine.currentTime-=5; break;
-          case 'arrowright': e.preventDefault(); audioEngine.currentTime+=5; break;
-          case 'arrowup': e.preventDefault(); setVolume(audioEngine.volume+0.05); break;
-          case 'arrowdown': e.preventDefault(); setVolume(audioEngine.volume-0.05); break;
-          case 'm': e.preventDefault(); btnMute.click(); break;
-          case 'f': e.preventDefault(); btnFullscreen.click(); break;
-          case 'e': e.preventDefault(); btnToggleView.click(); break;
-          case 'q': e.preventDefault(); btnQueue.click(); break;
+        case ' ': e.preventDefault(); togglePlay(); break;
+        case 'arrowleft': e.preventDefault(); audioEngine.currentTime-=5; break;
+        case 'arrowright': e.preventDefault(); audioEngine.currentTime+=5; break;
+        case 'arrowup': e.preventDefault(); setVolume(audioEngine.volume+0.05); break;
+        case 'arrowdown': e.preventDefault(); setVolume(audioEngine.volume-0.05); break;
+        case 'm': e.preventDefault(); btnMute.click(); break;
+        case 'f': e.preventDefault(); btnFullscreen.click(); break;
+        case 'e': e.preventDefault(); btnToggleView.click(); break;
+        case 'q': e.preventDefault(); btnQueue.click(); break;
         }
-      };
+        };
 
-      // INIT
-      resizeCanvas(); applyPreferences();
-      updateAllSliderProgress(); updateSliderProgress(eqBass); updateSliderProgress(eqMid); updateSliderProgress(eqTreb);
-      setStatus('Ready — open an audio or video file');
-    });
-  </script>
+        // INIT
+        resizeCanvas(); applyPreferences();
+        updateAllSliderProgress(); updateSliderProgress(eqBass); updateSliderProgress(eqMid); updateSliderProgress(eqTreb);
+        setStatus('Ready — open an audio or video file');
+        });
+    </script>
 </body>
 </html>
