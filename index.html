@@ -865,7 +865,6 @@
                  transition: 0.2s;
              }
 
-         f
          .eq-slider:hover::-webkit-slider-thumb {
              transform: scale(1.2);
              box-shadow: 0 0 20px var(--accent-cyan), 0 0 5px #fff;
@@ -1171,8 +1170,8 @@
       </span>
       <button class="glass-btn btn-small" id="btn-close-queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <button class="file-btn-label" style="background: rgba(0, 223, 216, 0.15); border: 1px solid var(--accent-cyan); color:#fff; border-radius: 12px; padding: 12px; cursor: pointer; display:flex; justify-content:center; align-items:center; font-weight:bold; box-shadow: var(--glass-highlight);" onclick="document.getElementById('file-input').click()">
-      + Add Tracks
+    <button class="file-btn-label" style="background: rgba(0, 223, 216, 0.15); border: 1px solid var(--accent-cyan); color: #fff; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; box-shadow: var(--glass-highlight);" onclick="document.getElementById('file-input').click()">
+        + Add Tracks
     </button>
     <div class="queue-list" id="queue-list"></div>
   </aside>
@@ -1532,16 +1531,32 @@
 
       async function addFilesToQueue(files) {
         let added = 0;
+        let rejected = 0;
+
         for (const file of files) {
-          if (file instanceof File && (SUPPORTED_FILE_PREFIXES.some(p => file.type.startsWith(p)) || /\.(mp3|wav|ogg|m4a|aac|flac|mp4|webm|mov)$/i.test(file.name))) {
-            state.playlist.push({ file, url: URL.createObjectURL(file), name: file.name.replace(/\.[^/.]+$/, '') });
-            added++;
-          }
-        }
-        if (added > 0) {
-          renderQueue(); showToast(`Added ${added} track(s) to Queue`);
-          if (state.currentIndex === -1) playTrack(0);
-        }
+          // Explicitly added .weba, .webm, .opus, and .m4a
+         const isSupportedExtension = /\.(mp3|wav|ogg|m4a|m4b|aac|flac|mp4|webm|weba|mov|opus|mka|wma)$/i.test(file.name);
+         const isSupportedMime = SUPPORTED_FILE_PREFIXES.some(p => file.type && file.type.startsWith(p));
+
+         if (file instanceof File && (isSupportedMime || isSupportedExtension)) {
+           state.playlist.push({ 
+             file, 
+             url: URL.createObjectURL(file), 
+             name: file.name.replace(/\.[^/.]+$/, '') 
+           });
+           added++;
+         } else {
+           rejected++;
+         }
+       }
+
+       if (added > 0) {
+         renderQueue(); 
+         showToast(`Added ${added} track(s) to Queue`);
+         if (state.currentIndex === -1) playTrack(0);
+       } else if (rejected > 0) {
+         showToast(`File format not supported.`, 'error');
+       }
       }
 
       function removeTrack(index) {
@@ -1555,15 +1570,41 @@
       async function playTrack(index) {
         if (index < 0 || index >= state.playlist.length) return;
         if (state.isLive) await stopLiveMic();
-        state.currentIndex = index; renderQueue();
+  
+        state.currentIndex = index; 
+        renderQueue();
+  
         const item = state.playlist[index];
         
-        albumArtBtn.classList.add('is-loading'); uploadLabel.textContent = 'Loading...';
-        if (!(await ensureAudioContextActive())) return;
+        albumArtBtn.classList.add('is-loading'); 
+        uploadLabel.textContent = 'Loading...';
+  
+        if (!(await ensureAudioContextActive())) {
+          albumArtBtn.classList.remove('is-loading');
+          uploadLabel.textContent = 'Load Local Media';
+          return;
+        }
         
-        audioEngine.src = item.url; audioEngine.load();
-        trackTitle.textContent = item.name; document.title = `${item.name} — Spectrolizer`;
-        try { await audioEngine.play(); } catch(e) {} finally { albumArtBtn.classList.remove('is-loading'); uploadLabel.textContent = 'Load Local Media'; }
+        // 1. Force full buffering mode for long/unindexed WebM/WEBA files
+        audioEngine.preload = 'auto';
+        audioEngine.src = item.url; 
+        audioEngine.load();
+
+        trackTitle.textContent = item.name; 
+        document.title = `${item.name} — Spectrolizer`;
+
+        try { 
+          await audioEngine.play(); 
+        } catch (e) {
+          console.error("Playback failed:", e);
+           // 2. Alert if autoplay blocked or decoding failed
+          if (typeof showToast === 'function') {
+             showToast("Unable to play track or file format issue", "error");
+          }
+        } finally { 
+          albumArtBtn.classList.remove('is-loading'); 
+          uploadLabel.textContent = 'Load Local Media'; 
+        }
       }
 
       function nextTrack() {
@@ -1821,6 +1862,14 @@
       audioEngine.onended = () => { if(!audioEngine.loop) nextTrack(); };
       audioEngine.onplay = () => { svgPlayIcon.innerHTML=PAUSE_ICON; albumArtBtn.classList.add('playing'); setStatus(`Playing ${trackTitle.textContent}`); resetUITimeout(); };
       audioEngine.onpause = () => { svgPlayIcon.innerHTML=PLAY_ICON; albumArtBtn.classList.remove('playing'); if(!audioEngine.ended) setStatus(`Paused — ${trackTitle.textContent}`); };
+      // Catch container decoding errors for corrupted or unindexed WebM/WEBA files
+      audioEngine.onerror = () => {
+        const err = audioEngine.error;
+        if (err) {
+          console.error("Audio playback error code:", err.code, err.message);
+          showToast("Error loading file: Corrupt header or missing WebM index.", "error");
+        }
+      };
       
       seekBar.oninput = (e) => { state.isSeeking = true; timeCurrent.textContent = formatTime(e.target.value); updateSliderProgress(seekBar); };
       seekBar.onchange = (e) => { audioEngine.currentTime = e.target.value; state.isSeeking = false; };
@@ -1836,7 +1885,7 @@
       ['mousemove', 'click', 'keydown', 'touchstart'].forEach(ev => window.addEventListener(ev, scheduleUIActivity, { passive: true }));
       
       window.onkeydown = (e) => {
-        if(e.target.tagName.match(/INPUT|SELECT|TEXTAREA/) || e.target.isContentEditable) return;
+        if (e.target?.tagName?.match(/INPUT|SELECT|TEXTAREA/) || e.target?.isContentEditable) return;
         switch(e.key.toLowerCase()) {
           case ' ': e.preventDefault(); togglePlay(); break;
           case 'arrowleft': e.preventDefault(); audioEngine.currentTime-=5; break;
