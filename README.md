@@ -26,7 +26,7 @@ It runs entirely in the browser, so there's no account or backend required.
 
 ## Live
 
-https://hongyuekai427-bit.github.io/spectrolizer/
+https://hongyuekai427-bit.github.io/Oscivue_audio-visualizer/
 
 ## How it works
 
@@ -41,4 +41,4 @@ There is no Oscivue backend.
 Clone the repository:
 
 ```bash
-git clone https://github.com/hongyuekai427-bit/audio-visualizer.git
+git clone https://github.com/hongyuekai427-bit/Oscivue_audio-visualizer.git
