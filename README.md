@@ -1,4 +1,4 @@
-# Oscivue
+# AI-audio-visualizer
 
 AI-audio-visualizer is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
 
