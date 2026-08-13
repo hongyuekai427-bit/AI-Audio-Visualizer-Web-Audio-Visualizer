@@ -1037,6 +1037,160 @@
                 pointer-events: all; /* Re-enables clicking when open */
             }
 
+        /* UI Effects Controls */
+        .settings-tabs {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .settings-tab {
+            flex: 1;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            border-radius: 10px;
+            padding: 9px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .settings-tab.active {
+                color: var(--accent-cyan);
+                border-color: rgba(0,223,216,0.45);
+                background: rgba(0,223,216,0.10);
+            }
+
+        .settings-tab-panel {
+            display: none;
+            flex-direction: column;
+            gap: 0;
+        }
+
+            .settings-tab-panel.active {
+                display: flex;
+            }
+
+        .ui-effect-card {
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .ui-effect-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .ui-effect-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .ui-effect-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .ui-effect-desc {
+            font-size: 10px;
+            line-height: 1.4;
+            color: var(--text-muted);
+        }
+
+        .ui-effect-toggle {
+            position: relative;
+            width: 42px;
+            height: 24px;
+            flex: 0 0 auto;
+        }
+
+            .ui-effect-toggle input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .ui-effect-toggle-track {
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.14);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .ui-effect-toggle-track::after {
+                content: '';
+                position: absolute;
+                width: 18px;
+                height: 18px;
+                top: 2px;
+                left: 2px;
+                border-radius: 50%;
+                background: #fff;
+                transition: transform 0.2s ease;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+            }
+
+        .ui-effect-toggle input:checked + .ui-effect-toggle-track {
+            background: rgba(0,223,216,0.34);
+            border-color: var(--accent-cyan);
+        }
+
+            .ui-effect-toggle input:checked + .ui-effect-toggle-track::after {
+                transform: translateX(18px);
+            }
+
+        /* Performance-oriented UI effect modes */
+        body.ui-blur-off #app-panel {
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: none;
+        }
+
+            body.ui-blur-off #app-panel .glass-btn,
+            body.ui-blur-off #app-panel .album-art-wrapper,
+            body.ui-blur-off #app-panel .upload-overlay,
+            body.ui-blur-off #app-panel .rec-overlay {
+                background: transparent;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                box-shadow: none;
+            }
+
+        body.animation-blur-off #app-panel,
+        body.animation-blur-off .premium-drawer,
+        body.animation-blur-off .settings-modal,
+        body.animation-blur-off .eq-modal {
+            filter: none !important;
+        }
+
+        body.animation-blur-off.is-transitioning #app-panel {
+            animation: none !important;
+        }
+
+        /* Keep secondary panels solid and blur-free */
+        .premium-drawer,
+        .settings-modal,
+        .eq-modal {
+            background: rgb(12,10,24);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
         /* Accessibility focus */
         *:focus-visible {
             outline: 2px solid var(--accent-cyan);
@@ -1196,59 +1350,95 @@
             <button class="glass-btn btn-small" id="btn-close-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
 
-        <div class="setting-group">
-            <span class="setting-label">Recording</span>
-            <span class="setting-desc">Export the visualizer and audio as a WebM file</span>
-            <button class="glass-btn icon-btn" id="btn-record" title="Record WebM Export" style="align-self: flex-start;">
-                <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="6" fill="currentColor"></circle></svg>
-                <span>Record WebM</span>
-            </button>
+        <div class="settings-tabs" role="tablist" aria-label="Settings categories">
+            <button class="settings-tab active" id="settings-tab-general" type="button" role="tab" aria-selected="true">General</button>
+            <button class="settings-tab" id="settings-tab-ui" type="button" role="tab" aria-selected="false">UI Effects</button>
         </div>
 
-        <div class="setting-group">
-            <span class="setting-label">Visualizer Mode</span>
-            <span class="setting-desc">Primary drawing engine style</span>
-            <select id="style-select" class="premium-select">
-                <option value="bars">Frequency Bars</option>
-                <option value="mirrored">Mirrored Spectrum</option>
-                <option value="radial">Circular Radial</option>
-                <option value="wave">Oscillating Wave</option>
-            </select>
+        <div class="settings-tab-panel active" id="settings-panel-general" role="tabpanel">
+            <div class="setting-group">
+                <span class="setting-label">Recording</span>
+                <span class="setting-desc">Export the visualizer and audio as a WebM file</span>
+                <button class="glass-btn icon-btn" id="btn-record" title="Record WebM Export" style="align-self: flex-start;">
+                    <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="6" fill="currentColor"></circle></svg>
+                    <span>Record WebM</span>
+                </button>
+            </div>
+
+            <div class="setting-group">
+                <span class="setting-label">Visualizer Mode</span>
+                <span class="setting-desc">Primary drawing engine style</span>
+                <select id="style-select" class="premium-select">
+                    <option value="bars">Frequency Bars</option>
+                    <option value="mirrored">Mirrored Spectrum</option>
+                    <option value="radial">Circular Radial</option>
+                    <option value="wave">Oscillating Wave</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <span class="setting-label">Color Theme</span>
+                <span class="setting-desc">Render pass color gradient</span>
+                <select id="theme-select" class="premium-select">
+                    <option value="neon">Neon Gradient</option>
+                    <option value="cyberpunk">Cyberpunk</option>
+                    <option value="monochrome">Monochrome</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <span class="setting-label">Analyzer FFT Size</span>
+                <span class="setting-desc">Higher size = greater frequency resolution</span>
+                <select id="fft-select" class="premium-select">
+                    <option value="512">512</option>
+                    <option value="1024">1024</option>
+                    <option value="2048" selected>2048</option>
+                    <option value="4096">4096</option>
+                    <option value="8192">8192 (Max)</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <span class="setting-label">Analyzer Smoothing</span>
+                <span class="setting-desc">Time-constant averaging for frames</span>
+                <input type="range" id="smooth-bar" value="0.85" min="0" max="0.99" step="0.01">
+            </div>
+            <div class="setting-group">
+                <span class="setting-label">Bass Boost Render Bias</span>
+                <span class="setting-desc">Visual amplifier for low frequencies</span>
+                <input type="range" id="bass-bar" value="1.35" min="1" max="3" step="0.05">
+            </div>
         </div>
-        <div class="setting-group">
-            <span class="setting-label">Color Theme</span>
-            <span class="setting-desc">Render pass color gradient</span>
-            <select id="theme-select" class="premium-select">
-                <option value="neon">Neon Gradient</option>
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="monochrome">Monochrome</option>
-            </select>
-        </div>
-        <div class="setting-group">
-            <span class="setting-label">Analyzer FFT Size</span>
-            <span class="setting-desc">Higher size = greater frequency resolution</span>
-            <select id="fft-select" class="premium-select">
-                <option value="512">512</option>
-                <option value="1024">1024</option>
-                <option value="2048" selected>2048</option>
-                <option value="4096">4096</option>
-                <option value="8192">8192 (Max)</option>
-            </select>
-        </div>
-        <div class="setting-group">
-            <span class="setting-label">Analyzer Smoothing</span>
-            <span class="setting-desc">Time-constant averaging for frames</span>
-            <input type="range" id="smooth-bar" value="0.85" min="0" max="0.99" step="0.01">
-        </div>
-        <div class="setting-group">
-            <span class="setting-label">Bass Boost Render Bias</span>
-            <span class="setting-desc">Visual amplifier for low frequencies</span>
-            <input type="range" id="bass-bar" value="1.35" min="1" max="3" step="0.05">
-        </div>
-        <div class="setting-group">
-            <span class="setting-label">Shadow Glow Strength</span>
-            <span class="setting-desc">Context 2D shadow pass intensity</span>
-            <input type="range" id="glow-bar" value="16" min="0" max="50" step="1">
+
+        <div class="settings-tab-panel" id="settings-panel-ui" role="tabpanel">
+            <div class="ui-effect-card">
+                <div class="ui-effect-row">
+                    <div class="ui-effect-copy">
+                        <span class="ui-effect-title">UI Blur</span>
+                        <span class="ui-effect-desc">Glass blur for the main audio player in both compact and expanded modes.</span>
+                    </div>
+                    <label class="ui-effect-toggle">
+                        <input type="checkbox" id="ui-blur-toggle" checked>
+                        <span class="ui-effect-toggle-track"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="ui-effect-card">
+                <div class="ui-effect-row">
+                    <div class="ui-effect-copy">
+                        <span class="ui-effect-title">Animation Blur</span>
+                        <span class="ui-effect-desc">Controls blur during panel motion and other animated UI transitions.</span>
+                    </div>
+                    <label class="ui-effect-toggle">
+                        <input type="checkbox" id="animation-blur-toggle" checked>
+                        <span class="ui-effect-toggle-track"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <span class="setting-label">Shadow Glow Strength</span>
+                <span class="setting-desc">Context 2D shadow pass intensity</span>
+                <input type="range" id="glow-bar" value="16" min="0" max="50" step="1">
+            </div>
         </div>
     </aside>
 
@@ -1326,6 +1516,9 @@
 
         const styleSelect = $('style-select'), themeSelect = $('theme-select'), fftSelect = $('fft-select');
         const smoothBar = $('smooth-bar'), bassBar = $('bass-bar'), glowBar = $('glow-bar');
+        const settingsTabGeneral = $('settings-tab-general'), settingsTabUi = $('settings-tab-ui');
+        const settingsPanelGeneral = $('settings-panel-general'), settingsPanelUi = $('settings-panel-ui');
+        const uiBlurToggle = $('ui-blur-toggle'), animationBlurToggle = $('animation-blur-toggle');
         const eqBass = $('eq-bass'), eqMid = $('eq-mid'), eqTreb = $('eq-treb');
         const eqPresets = document.querySelectorAll('.eq-preset-pill');
 
@@ -1337,7 +1530,7 @@
         const DEFAULT_PREFERENCES = Object.freeze({
         style: 'bars', theme: 'neon', fftSize: 2048, volume: 0.8, loop: false, expanded: false, shuffle: false,
         smoothing: 0.85, bassBoost: 1.35, glowStrength: 16,
-        eqB: 0, eqM: 0, eqT: 0
+        eqB: 0, eqM: 0, eqT: 0, uiBlur: true, animationBlur: true
         });
 
         let VISUALIZER_SETTINGS = {
@@ -1409,7 +1602,8 @@
         style: state.currentStyle, theme: state.currentTheme, fftSize: Number(fftSelect.value),
         volume: audioEngine.volume, loop: audioEngine.loop, expanded: document.body.classList.contains('expanded'), shuffle: state.shuffle,
         smoothing: VISUALIZER_SETTINGS.smoothing, bassBoost: VISUALIZER_SETTINGS.bassBoost, glowStrength: VISUALIZER_SETTINGS.glowStrength,
-        eqB: Number(eqBass.value), eqM: Number(eqMid.value), eqT: Number(eqTreb.value)
+        eqB: Number(eqBass.value), eqM: Number(eqMid.value), eqT: Number(eqTreb.value),
+        uiBlur: uiBlurToggle.checked, animationBlur: animationBlurToggle.checked
         };
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pref)); } catch {}
         }
@@ -1428,6 +1622,9 @@
         smoothBar.value = VISUALIZER_SETTINGS.smoothing; bassBar.value = VISUALIZER_SETTINGS.bassBoost; glowBar.value = VISUALIZER_SETTINGS.glowStrength;
 
         eqBass.value = clamp(p.eqB, -15, 15); eqMid.value = clamp(p.eqM, -15, 15); eqTreb.value = clamp(p.eqT, -15, 15);
+        uiBlurToggle.checked = p.uiBlur !== false; animationBlurToggle.checked = p.animationBlur !== false;
+        document.body.classList.toggle('ui-blur-off', !uiBlurToggle.checked);
+        document.body.classList.toggle('animation-blur-off', !animationBlurToggle.checked);
 
         audioEngine.loop = Boolean(p.loop); btnLoop.classList.toggle('active', audioEngine.loop);
         state.shuffle = Boolean(p.shuffle); btnShuffle.classList.toggle('active', state.shuffle);
@@ -1816,7 +2013,7 @@
 
         function setExpanded(isExp, anim = true) {
         clearTimeout(state.transitionTimeout);
-        if (anim && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (anim && animationBlurToggle.checked && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.body.classList.remove('is-transitioning'); void document.body.offsetWidth; document.body.classList.add('is-transitioning');
         }
         document.body.classList.toggle('expanded', isExp);
@@ -1909,6 +2106,19 @@
         btnSettings.onclick = () => settingsDrawer.classList.toggle('open');
         btnCloseSettings.onclick = () => settingsDrawer.classList.remove('open');
 
+        function setSettingsTab(tab) {
+        const showUi = tab === 'ui';
+        settingsTabGeneral.classList.toggle('active', !showUi);
+        settingsTabUi.classList.toggle('active', showUi);
+        settingsTabGeneral.setAttribute('aria-selected', String(!showUi));
+        settingsTabUi.setAttribute('aria-selected', String(showUi));
+        settingsPanelGeneral.classList.toggle('active', !showUi);
+        settingsPanelUi.classList.toggle('active', showUi);
+        }
+
+        settingsTabGeneral.onclick = () => setSettingsTab('general');
+        settingsTabUi.onclick = () => setSettingsTab('ui');
+
         btnQueue.onclick = () => queueDrawer.classList.toggle('open');
         btnCloseQueue.onclick = () => queueDrawer.classList.remove('open');
 
@@ -1929,6 +2139,14 @@
         smoothBar.oninput = (e) => { VISUALIZER_SETTINGS.smoothing = Number(e.target.value); updateSliderProgress(smoothBar); savePreferences(); };
         bassBar.oninput = (e) => { VISUALIZER_SETTINGS.bassBoost = Number(e.target.value); updateSliderProgress(bassBar); savePreferences(); };
         glowBar.oninput = (e) => { VISUALIZER_SETTINGS.glowStrength = Number(e.target.value); updateSliderProgress(glowBar); savePreferences(); };
+        uiBlurToggle.onchange = () => {
+        document.body.classList.toggle('ui-blur-off', !uiBlurToggle.checked);
+        savePreferences();
+        };
+        animationBlurToggle.onchange = () => {
+        document.body.classList.toggle('animation-blur-off', !animationBlurToggle.checked);
+        savePreferences();
+        };
 
         // Media Actions
         albumArtBtn.onclick = () => fileInput.click();
