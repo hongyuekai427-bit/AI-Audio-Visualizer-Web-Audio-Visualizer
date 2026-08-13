@@ -1,6 +1,6 @@
 # Oscivue
 
-Oscivue is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
+AI-audio-visualizer is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
 
 It runs entirely in the browser, so there's no account or backend required.
 
@@ -26,19 +26,19 @@ It runs entirely in the browser, so there's no account or backend required.
 
 ## Live
 
-https://hongyuekai427-bit.github.io/Oscivue_audio-visualizer/
+https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
 ## How it works
 
-Oscivue uses the browser's Web Audio API to analyze the audio and draw the visualization on a canvas.
+AI-audio-visualizer uses the browser's Web Audio API to analyze the audio and draw the visualization on a canvas.
 
 Files selected from your computer are handled locally by the browser. Microphone and system-audio modes use the browser's normal permission prompts.
 
-There is no Oscivue backend.
+There is no AI-audio-visualizer backend.
 
 ## Running it locally
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/hongyuekai427-bit/Oscivue_audio-visualizer.git
+git clone https://github.com/hongyuekai427-bit/AI-audio-visualizer.git
