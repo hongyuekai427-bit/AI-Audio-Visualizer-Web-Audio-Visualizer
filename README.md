@@ -1,1 +1,1 @@
-a simple web spectrolizer, vibecoded.
+a simple web audio visualizer
