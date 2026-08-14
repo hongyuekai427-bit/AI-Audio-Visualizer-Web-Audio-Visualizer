@@ -1,43 +1,98 @@
-# AI-audio-visualizer (AI used for coding ONLY.)
+# 🎵 AI Audio Visualizer
 
-"AI"-audio-visualizer is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
+A modern, browser-based audio visualizer with real-time music visualization, customizable visual effects, audio controls, EQ, PWA support, and more.
 
-It runs entirely in the browser, so there's no account or backend required.
-
-## Live
-
+🌐 **Live Demo:**  
 https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
-## Features
+---
 
-- Real-time audio visualizer
-- Multiple (4) visualization styles
-- Different (3) themes
-- Audio queue / playlist
-- Shuffle and loop
-- Volume and playback controls
-- 3-band EQ
-- EQ presets
-- Bass boost(EQ), smoothing and glow controls
-- Compact / expanded UI
-- Fullscreen mode
-- Microphone input
-- System / tab audio input
-- Visualization recording
-- Drag and drop audio files
-- Local preference saving
-- PWA / offline support
+## ✨ Features
 
+### Audio Player
+- Local audio file playback
+- Drag-and-drop audio loading
+- Playlist / queue management
+- Shuffle
+- Repeat / loop modes
+- Previous / next track controls
+- Playback progress and volume controls
 
-## How it works
+### Audio Visualization
+- Real-time audio-reactive visualizations
+- Multiple visualization modes
+- Dynamic visual effects
+- Fullscreen visualization
+- Responsive visualizer rendering
 
-It uses the browser's Web Audio API to analyze the audio and draw the visualization on a canvas.
+### UI & Visual Effects
+- Customizable themes
+- Glow effects
+- UI blur controls
+- Animation blur controls
+- Adjustable visual effects
+- Responsive glass-style interface
+- Smooth UI animations
 
-Files selected from your computer are handled locally by the browser. Microphone and system-audio modes use the browser's normal permission prompts.
+### Audio Effects
+- Equalizer
+- Bass boost
+- Audio-reactive effects
+- Microphone audio support
+- System audio capture support where supported by the browser
 
-There is no visualizer backend.
+### Settings
+Settings are separated into dedicated sections to keep customization organized.
 
-## Running it locally
+#### UI Effects
+
+Controls the appearance of the main audio player interface and its visual elements.
+
+#### Animation Effects
+
+Controls blur and other effects used during visual animations.
+
+Settings are designed to let users reduce visual effects when they prefer a simpler or more performance-friendly interface.
+
+### 📱 Progressive Web App
+
+The project includes PWA functionality through:
+
+- `manifest.json`
+- Service worker support
+- Installable web application support
+- Offline caching where supported
+
+---
+
+## 🔒 Privacy
+
+This project is designed to work primarily on the client side.
+
+Audio files can be loaded directly in the browser without requiring an account or a dedicated backend service.
+
+The project does not intentionally require users to upload their local music to a server for visualization.
+
+> Browser APIs such as microphone or system-audio capture are subject to browser permissions and platform limitations.
+
+---
+
+## Getting Started
+
+### Use the Live Demo
+
+The easiest way to use the project is through the hosted version:
+
+**https://hongyuekai427-bit.github.io/AI-audio-visualizer/**
+
+1. Open the website.
+2. Load an audio file.
+3. Start playback.
+4. Select a visualization mode.
+5. Customize the visual effects and audio settings.
+6. Enjoy.
+
+### Run Locally
 
 Clone the repository:
 
