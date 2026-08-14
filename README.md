@@ -115,4 +115,5 @@ Clone the repository:
 git clone https://github.com/hongyuekai427-bit/AI-audio-visualizer.git
 ```
 
+---
 *AI in the header means the AI built the web app, only.
