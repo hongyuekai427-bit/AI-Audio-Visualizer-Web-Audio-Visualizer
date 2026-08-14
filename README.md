@@ -1,6 +1,6 @@
 # AI-audio-visualizer (AI used for coding ONLY.)
 
-AI-audio-visualizer is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
+"AI"-audio-visualizer is a browser-based audio visualizer that lets you play local audio files and watch them react in real time.
 
 It runs entirely in the browser, so there's no account or backend required.
 
@@ -30,11 +30,11 @@ https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
 ## How it works
 
-AI-audio-visualizer uses the browser's Web Audio API to analyze the audio and draw the visualization on a canvas.
+It uses the browser's Web Audio API to analyze the audio and draw the visualization on a canvas.
 
 Files selected from your computer are handled locally by the browser. Microphone and system-audio modes use the browser's normal permission prompts.
 
-There is no AI-audio-visualizer backend.
+There is no visualizer backend.
 
 ## Running it locally
 
