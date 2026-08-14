@@ -4,17 +4,21 @@
 
 It runs entirely in the browser, so there's no account or backend required.
 
+## Live
+
+https://hongyuekai427-bit.github.io/AI-audio-visualizer/
+
 ## Features
 
 - Real-time audio visualizer
-- Multiple visualization styles
-- Different themes
+- Multiple (4) visualization styles
+- Different (3) themes
 - Audio queue / playlist
 - Shuffle and loop
 - Volume and playback controls
 - 3-band EQ
 - EQ presets
-- Bass boost, smoothing and glow controls
+- Bass boost(EQ), smoothing and glow controls
 - Compact / expanded UI
 - Fullscreen mode
 - Microphone input
@@ -24,9 +28,6 @@ It runs entirely in the browser, so there's no account or backend required.
 - Local preference saving
 - PWA / offline support
 
-## Live
-
-https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
 ## How it works
 
