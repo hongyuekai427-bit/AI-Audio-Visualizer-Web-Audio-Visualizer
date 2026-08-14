@@ -54,7 +54,7 @@ Controls blur and other effects used during visual animations.
 
 Settings are designed to let users reduce visual effects when they prefer a simpler or more performance-friendly interface.
 
-### 📱 Progressive Web App
+### Progressive Web App
 
 The project includes PWA functionality through:
 
