@@ -1,4 +1,4 @@
-# 🎵 AI (built) Audio Visualizer
+# 🎵 AI* Audio Visualizer
 
 A modern, browser-based audio visualizer with real-time music visualization, customizable visual effects, audio controls, EQ, PWA support, and more.
 
