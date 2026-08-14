@@ -1,4 +1,4 @@
-# 🎵 AI Audio Visualizer
+# 🎵 AI (built) Audio Visualizer
 
 A modern, browser-based audio visualizer with real-time music visualization, customizable visual effects, audio controls, EQ, PWA support, and more.
 
@@ -113,3 +113,5 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/hongyuekai427-bit/AI-audio-visualizer.git
+```
+*AI in the header means the AI built the web app, only.
