@@ -1,8 +1,10 @@
-const CACHE_NAME = 'spectrolizer-v2';
+const CACHE_NAME = 'spectrolizer-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // 1. Install Event: Cache essential app assets
