@@ -7,11 +7,11 @@ https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
 ## Screenshots
 <p align="center">
-  <img src="preview/main-general.png" width="45%">
-  <img src="preview/main-ui.png" width="45%">
+  <img src="preview/main-compacted.png" width="45%">
+  <img src="preview/main-expanded.png" width="45%">
 </p>
 <p align="center">
-  <img src="preview/queue.png" width="600">
+  <img src="preview/queue.png" width="300">
 </p>
 <p align="center">
   <img src="preview/settings-general.png" width="45%">
