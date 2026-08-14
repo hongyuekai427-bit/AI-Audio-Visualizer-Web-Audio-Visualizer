@@ -12,7 +12,7 @@ https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 </p>
 
 <p align="center">
-  <img src="preview/queue.png" width="20%">
+  <img src="preview/queue.png" width="30%">
   <img src="preview/settings-general.png" width="30%">
   <img src="preview/settings-ui.png" width="30%">
   
