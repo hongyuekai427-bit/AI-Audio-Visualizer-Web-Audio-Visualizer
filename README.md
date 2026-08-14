@@ -3,7 +3,7 @@
 A modern, browser-based audio visualizer with real-time music visualization, customizable visual effects, audio controls, EQ, PWA support, and more.
 
 🌐 **Live Demo:**  
-https://hongyuekai427-bit.github.io/AI-audio-visualizer/
+https://hongyuekai427-bit.github.io/AI-Audio-Visualizer-Web-Audio-Visualizer/
 
 ## Screenshots
 
@@ -98,7 +98,7 @@ The project does not intentionally require users to upload their local music to 
 
 The easiest way to use the project is through the hosted version:
 
-**https://hongyuekai427-bit.github.io/AI-audio-visualizer/**
+**https://hongyuekai427-bit.github.io/AI-Audio-Visualizer-Web-Audio-Visualizer/**
 
 1. Open the website.
 2. Load an audio file.
@@ -112,7 +112,7 @@ The easiest way to use the project is through the hosted version:
 Clone the repository:
 
 ```bash
-git clone https://github.com/hongyuekai427-bit/AI-audio-visualizer.git
+git clone https://github.com/hongyuekai427-bit/AI-Audio-Visualizer-Web-Audio-Visualizer.git
 ```
 
 ---
