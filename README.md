@@ -5,6 +5,13 @@ A modern, browser-based audio visualizer with real-time music visualization, cus
 🌐 **Live Demo:**  
 https://hongyuekai427-bit.github.io/AI-audio-visualizer/
 
+## Screenshots
+![Main Visualizer](preview/main-compacted.png)
+![Main Visualizer](preview/main-expanded.png)
+![Main Visualizer](preview/queue.png)
+![Main Visualizer](preview/settings-general.png)
+![Main Visualizer](preview/settings-ui.png)
+
 ---
 
 ## ✨ Features
