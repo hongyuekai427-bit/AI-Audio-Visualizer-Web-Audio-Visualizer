@@ -1480,8 +1480,19 @@
         navigator.serviceWorker.register('./sw.js')
         .then(reg => console.log('Service Worker registered successfully:', reg.scope))
         .catch(err => console.error('Service Worker registration failed:', err));
+
+        // Reload once a new Service Worker takes control, so the page
+        // is actually running the updated code (sw.js already calls
+        // skipWaiting()/clients.claim(), this just tells the open tab).
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        refreshing = true;
+        window.location.reload();
+        });
         });
         }
+
 
         document.addEventListener('DOMContentLoaded', () => {
         'use strict';
@@ -1564,6 +1575,7 @@
         eqNodes: { low: null, mid: null, high: null },
         micStream: null, micSource: null, systemAudioStream: null, systemAudioSource: null, liveInputType: null, isLive: false,
         mediaRecorder: null, recordedChunks: [], recordingInterval: null, recStartTime: 0,
+        recVideoStream: null, recDestNode: null,
         frequencyData: null, waveformData: null,
         playlist: [], currentIndex: -1, shuffle: false, draggedItem: null,
         isAudioSetup: false, isSeeking: false, isRendering: false, renderFrameId: 0,
@@ -1879,9 +1891,10 @@
         async function startSystemAudio() {
         if (!(await ensureAudioContextActive())) return;
         if (!navigator.mediaDevices?.getDisplayMedia) return showToast("System audio input is not supported in this browser", "error");
+        let stream;
         try {
         // Browsers require display capture permission to obtain shared system/tab audio.
-        const stream = await navigator.mediaDevices.getDisplayMedia({
+        stream = await navigator.mediaDevices.getDisplayMedia({
         video: true,
         audio: {
         echoCancellation: false,
@@ -1917,6 +1930,9 @@
         }, { once: true });
         showToast("System audio connected", "info");
         } catch(e) {
+        // Release any tracks the browser granted before the failure happened,
+        // otherwise the browser's "sharing" indicator stays stuck on.
+        if (stream) stream.getTracks().forEach(t => t.stop());
         if (e?.name !== 'AbortError' && e?.name !== 'NotAllowedError') showToast("Unable to capture system audio", "error");
         }
         }
@@ -1958,13 +1974,24 @@
         const vStream = canvas.captureStream(60);
         const dest = state.audioContext.createMediaStreamDestination();
         state.analyser.connect(dest);
+        state.recVideoStream = vStream;
+        state.recDestNode = dest;
 
         const combined = new MediaStream([...vStream.getTracks(), ...dest.stream.getAudioTracks()]);
-        try {
-        state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9,opus' });
-        } catch(e) {
-        state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
+
+        if (typeof MediaRecorder === 'undefined') {
+        return showToast("Recording is not supported in this browser.", "error");
         }
+        const mimeCandidates = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+        const supportedType = mimeCandidates.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t));
+        try {
+        state.mediaRecorder = supportedType
+        ? new MediaRecorder(combined, { mimeType: supportedType })
+        : new MediaRecorder(combined);
+        } catch(e) {
+        return showToast("Unable to start recording on this browser.", "error");
+        }
+
 
         state.recordedChunks = [];
         state.mediaRecorder.ondataavailable = e => { if (e.data.size > 0) state.recordedChunks.push(e.data); };
@@ -1983,11 +2010,14 @@
         function stopRecording() {
         if (!state.mediaRecorder) return;
         state.mediaRecorder.stop(); clearInterval(state.recordingInterval);
+        if (state.recDestNode) { state.analyser.disconnect(state.recDestNode); state.recDestNode = null; }
+        if (state.recVideoStream) { state.recVideoStream.getTracks().forEach(t => t.stop()); state.recVideoStream = null; }
         document.body.classList.remove('is-recording'); btnRecord.classList.remove('active');
         }
 
         function exportRecording() {
         const blob = new Blob(state.recordedChunks, { type: 'video/webm' });
+        state.recordedChunks = [];
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.style.display = 'none';
         a.href = url; a.download = `Spectrolizer_Export_${Date.now()}.webm`;
